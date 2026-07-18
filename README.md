@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="docs/assets/logo.png" alt="Rigwright logo" width="180">
+</p>
+
 # Rigwright
 
 > A proposal-only system for authoring and evaluating small atomic skills across Claude Code and Codex.
