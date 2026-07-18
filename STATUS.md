@@ -10,7 +10,7 @@
 
 ## Lifecycle authority
 
-Rigwright separates capability content from lifecycle state. Which record is live and which record wins a routing collision is decided by an external lifecycle authority — the owner's separate capability registry, outside this repository. This repository only proposes records and evidence into that decision.
+Rigwright separates capability content from lifecycle state. Which record is live and which record wins a routing collision is decided by an external lifecycle authority: the owner's separate capability registry, outside this repository. This repository only proposes records and evidence into that decision.
 
 Records carry one of the lifecycle states defined in the [proposed lifecycle and priority schema](docs/lifecycle-priority.md): `current-authorized`, `candidate-sandbox`, `compatibility-alias`, `archived-retained`, `quarantined-untrusted`, and `rejected`. A normal build includes only `current-authorized` records; candidate, alias, archived, quarantined, rejected, and unavailable records are excluded and cannot displace a current owner. All seven skills are currently `candidate-sandbox`, which is why `--mode normal` builds zero packages today:
 

@@ -8,7 +8,13 @@
 [![PyPI version](https://img.shields.io/pypi/v/rigwright)](https://pypi.org/project/rigwright/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-Rigwright authors and evaluates small, single-purpose skills for AI coding agents — the reusable instruction files that Claude Code and Codex load to handle one kind of task well. In practice, skill files sprawl into catch-all documents where no one can tell whether an edit helped, and each platform needs the same skill re-packaged by hand in its own format. Rigwright gives every skill one measurable outcome and its own eval set (test prompts with expected behavior), then generates the packaging for each platform from a single neutral source — validated against both platforms' native schemas.
+Rigwright authors and evaluates small, single-purpose skills for AI coding agents: the reusable instruction files that Claude Code and Codex load to handle one kind of task well. In practice, skill files sprawl into catch-all documents where no one can tell whether an edit helped, and each platform needs the same skill re-packaged by hand in its own format. Rigwright gives every skill one measurable outcome and its own eval set (test prompts with expected behavior), then generates the packaging for each platform from a single neutral source, validated against both platforms' native schemas.
+
+## Getting started
+
+- **Prerequisites:** Python 3.12 or newer.
+- **Install:** `pip install rigwright`. The CLI is published on PyPI as [`rigwright`](https://pypi.org/project/rigwright/). See [Install](#install) for the run-from-clone alternative that needs no install at all.
+- **Check it works:** from a clone of this repository, run `rigwright gate`. It runs the full offline gate (contract, build, package, determinism, fixtures, and evals) and prints `offline gate PASS: 8/8 commands`.
 
 ## One skill, end to end
 
@@ -71,7 +77,7 @@ policy:
   allow_implicit_invocation: false
 ```
 
-Each skill ships its own eval set — prompts that must trigger it and realistic near misses that must not — and one command replays them all:
+Each skill ships its own eval set (prompts that must trigger it and realistic near misses that must not), and one command replays them all:
 
 ```console
 $ python -B tools/run_evals.py
@@ -92,7 +98,7 @@ All output above is from a real run on this tree.
 | `rigwright-prioritize` | Picks which one skill owns an intent when several overlap. |
 | `rigwright-archive` | Packages a retiring skill as a hash-verified copy with restore proof. |
 
-Each skill is deliberately narrow: anything beyond its one outcome — installing, activating, promoting — is out of scope by contract, and the validator enforces those boundaries. The per-skill boundary lists are in [STATUS.md](STATUS.md).
+Each skill is deliberately narrow: anything beyond its one outcome (installing, activating, promoting) is out of scope by contract, and the validator enforces those boundaries. The per-skill boundary lists are in [STATUS.md](STATUS.md).
 
 ## How it works
 
@@ -106,7 +112,7 @@ flowchart LR
   E --> F["Eval report<br>59 assertions"]
 ```
 
-The neutral record is the single source of truth; generated files say so and point back to it. Builds are deterministic — rebuilding produces byte-identical trees and archives, and `tools/verify_determinism.py` proves it. Beyond Rigwright's own validators, a manual CI job runs each platform's native validator (`claude plugin validate` and the Codex plugin validator) against the generated packages.
+The neutral record is the single source of truth; generated files say so and point back to it. Builds are deterministic: rebuilding produces byte-identical trees and archives, and `tools/verify_determinism.py` proves it. Beyond Rigwright's own validators, a manual CI job runs each platform's native validator (`claude plugin validate` and the Codex plugin validator) against the generated packages.
 
 ## Install
 
@@ -116,7 +122,7 @@ The CLI is on PyPI as [`rigwright`](https://pypi.org/project/rigwright/) and nee
 pip install rigwright
 ```
 
-Run the complete offline gate from a clone of this repository — `rigwright gate`, or with no install at all:
+Run the complete offline gate from a clone of this repository with `rigwright gate`, or with no install at all:
 
 ```console
 $ python tools/run_all.py
@@ -138,11 +144,11 @@ offline evals passed: 59 assertions, 7 near misses, 6 fixed tasks
 
 Evidence is written under `artifacts/` (untracked). See [Validation](docs/public/validation.md) for the cache-free assessment pattern.
 
-**Status:** `0.1.0` is a pre-release candidate on PyPI — the seven skills are proposals under review, and nothing in this repository installs or activates anything; full current state in [STATUS.md](STATUS.md).
+**Status:** `0.1.0` is a pre-release candidate on PyPI: the seven skills are proposals under review, and nothing in this repository installs or activates anything; full current state in [STATUS.md](STATUS.md).
 
 ## Safety and limitations
 
-- Generated packages under `artifacts/` are offline evaluation evidence, not installations. Which skill version is live is decided outside this repository, by the owner's separate lifecycle registry — see [STATUS.md](STATUS.md).
+- Generated packages under `artifacts/` are offline evaluation evidence, not installations. Which skill version is live is decided outside this repository, by the owner's separate lifecycle registry (see [STATUS.md](STATUS.md)).
 - **Open problem:** producing Codex plugin manifests that pass Codex's native validator for a dual-surface plugin. Rigwright's own generated Codex package passes the captured validators, but that is candidate-local evidence and does not settle the general case. See [Conflicts and open problems](docs/conflicts-and-blockers.md).
 - The offline gates prove deterministic contract and fixture coverage; they are not adoption, production, or model-quality claims. An internal blinded runtime evaluation was run on both platforms; it does not authorize promotion.
 - Original material is MIT licensed under Rahul Krishna. Captured third-party material retains its original terms and is not relicensed; see [third-party notices](THIRD_PARTY_NOTICES.md).
