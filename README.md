@@ -4,6 +4,10 @@
 
 # Rigwright
 
+[![pipeline status](https://gitlab.com/krahul02004/Rigwright/badges/main/pipeline.svg)](https://gitlab.com/krahul02004/Rigwright/-/commits/main)
+[![PyPI version](https://img.shields.io/pypi/v/rigwright)](https://pypi.org/project/rigwright/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
 > A proposal-only system for authoring and evaluating small atomic skills across Claude Code and Codex.
 
 Rigwright combines one neutral skill contract with thin surface adapters. Each capability stays independently measurable, and lifecycle state and routing priority stay with an external lifecycle authority rather than with this repository.
@@ -41,33 +45,34 @@ flowchart LR
 
 Folder presence is not activation. A normal build excludes candidate, alias, archived, quarantined, rejected, and unavailable records. An external lifecycle authority remains the lifecycle and priority owner.
 
-## Try it
+## Install
 
-Use Python 3.12 or newer in a disposable clone or worktree:
+The CLI is published on PyPI as [`rigwright`](https://pypi.org/project/rigwright/) and requires Python 3.12 or newer:
 
 ```sh
-python tools/run_all.py
+pip install rigwright
 ```
 
-The complete gate writes reproducible build and validation evidence under `artifacts/` (untracked). It does not install a generated package. The same tools are exposed as a CLI when the package is installed:
+Run it from a disposable clone or worktree of this repository:
 
 ```sh
-pip install .
 rigwright gate            # complete offline gate
 rigwright validate-contract
 rigwright build-adapters --mode candidate-sandbox
 ```
 
+The same gate also runs without installing anything: `python tools/run_all.py`. The complete gate writes reproducible build and validation evidence under `artifacts/` (untracked). It does not install a generated package.
+
 For the exact current counts and the cache-free assessment pattern, see [Validation](docs/public/validation.md).
 
 ## Safety and limitations
 
-- `0.1.0` is a pre-release. No tag, host Release, registry publication, installation, or promotion exists.
+- `0.1.0` is a pre-release, published to PyPI as `rigwright`. No git tag, host Release, skill installation, or promotion exists.
 - Original Rigwright material is MIT licensed under Rahul Krishna. Captured and imported material retains its original terms and is not relicensed; raw captures are retained privately and are not part of this repository.
 - An internal blinded runtime evaluation of candidate and baseline conditions was run on both surfaces. It does not authorize promotion, and producing Codex plugin manifests that pass the native validator for a dual-surface plugin remains an open problem. See [Conflicts and open problems](docs/conflicts-and-blockers.md).
 - The offline gates prove deterministic contract and fixture coverage only. They are not adoption, production, or model-superiority claims.
 - Generated packages under `artifacts/` are evaluation evidence, not installations or marketplace distributions.
-- No public security-reporting contact or canonical host URL has been selected yet; see [Security policy](SECURITY.md).
+- No dedicated public security-reporting contact has been designated yet; report privately through the GitLab project rather than a public issue. See [Security policy](SECURITY.md).
 
 ## Project documents
 
