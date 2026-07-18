@@ -1,7 +1,6 @@
-# Offline-only candidate verification. The selected runner must already
-# contain Python 3.12+, the Claude plugin validator, and the Codex plugin
-# validator. This pipeline installs nothing, uploads no package artifact, and
-# performs no provider, marketplace, release, publication, or live-skill step.
+# Offline candidate verification. Installs nothing at runtime beyond the
+# public runner image, uploads no package artifact, and performs no provider,
+# marketplace, release, publication, or live-skill step.
 
 stages:
   - verify
@@ -9,15 +8,11 @@ stages:
 variables:
   PYTHONDONTWRITEBYTECODE: "1"
   PYTHONHASHSEED: "0"
-  PIP_NO_INDEX: "1"
   PIP_DISABLE_PIP_VERSION_CHECK: "1"
-  RIGWRIGHT_CLAUDE_CLI: "claude"
-  RIGWRIGHT_CODEX_PLUGIN_VALIDATOR: ""
 
-rigwright-offline-gates:
+offline-gates:
   stage: verify
-  tags:
-    - rigwright-offline
+  image: python:3.12
   script:
     - python3 -B tools/validate_contract.py
     - python3 -B tools/build_adapters.py --mode normal --output-root artifacts/build-normal
@@ -26,6 +21,23 @@ rigwright-offline-gates:
     - python3 -B tools/verify_determinism.py
     - python3 -B tools/validate_runtime_fixtures.py
     - python3 -B tools/run_evals.py
+  timeout: 20m
+
+# Native surface validators need a runner that already provides the Claude
+# plugin CLI and the Codex plugin validator. This job is manual and only
+# schedulable where such a runner is registered; it never blocks the pipeline.
+native-validators:
+  stage: verify
+  tags:
+    - rigwright-offline
+  rules:
+    - when: manual
+      allow_failure: true
+  variables:
+    RIGWRIGHT_CLAUDE_CLI: "claude"
+    RIGWRIGHT_CODEX_PLUGIN_VALIDATOR: ""
+  script:
+    - python3 -B tools/build_adapters.py --mode candidate-sandbox --output-root artifacts/build
     - test -n "$RIGWRIGHT_CLAUDE_CLI"
     - command -v "$RIGWRIGHT_CLAUDE_CLI"
     - '"$RIGWRIGHT_CLAUDE_CLI" plugin validate artifacts/build/claude-code/rigwright'
