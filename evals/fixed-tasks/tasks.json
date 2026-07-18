@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "tasks": [
+    {"id":"create-simple-skill","leaf":"rigwright-author-skill","source_case":"simple-skill"},
+    {"id":"improve-bloated-skill","leaf":"rigwright-author-skill","source_case":"improve-bloated"},
+    {"id":"resolve-trigger-collision","leaf":"rigwright-prioritize","source_case":"current-vs-candidate"},
+    {"id":"migrate-claude-only-to-codex","leaf":"rigwright-migrate","source_case":"claude-to-codex"},
+    {"id":"create-dual-surface-plugin","leaf":"rigwright-author-plugin","source_case":"dual-surface"},
+    {"id":"reject-unsafe-plugin","leaf":"rigwright-author-plugin","source_case":"unsafe-rejection"}
+  ]
+}

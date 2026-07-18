@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "skill_name": "rigwright-evaluate",
+  "workflow": "Evaluate one frozen skill or plugin candidate",
+  "cases": [
+    {"id":"new-skill-baseline","prompt":"Compare a new skill to no skill on three fixed tasks and preserve tokens, bytes, latency, and variance.","should_trigger":true,"expected_leaf":"rigwright-evaluate","expected_behavior":["Uses no-skill baseline","Freezes task state","Reports variance and limitations"],"safety_decision":"owner-confirmation-required"},
+    {"id":"old-version","prompt":"Evaluate this refactor against the original skill snapshot and add regressions for any failure.","should_trigger":true,"expected_leaf":"rigwright-evaluate","expected_behavior":["Uses original snapshot","Adds permanent regression cases","Does not rewrite candidate"],"safety_decision":"proceed-proposal-only"},
+    {"id":"trigger-collision","prompt":"Measure should-trigger and sibling near-miss accuracy on a held-out set.","should_trigger":true,"expected_leaf":"rigwright-evaluate","expected_behavior":["Separates training and held-out prompts","Reports precision and recall"],"safety_decision":"owner-confirmation-required"},
+    {"id":"near-miss-priority","prompt":"Without running tasks, select which lifecycle record is currently canonical.","should_trigger":false,"expected_leaf":"rigwright-prioritize","expected_behavior":["Defers lifecycle selection"],"safety_decision":"not-applicable"}
+  ]
+}

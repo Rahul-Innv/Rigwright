@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "id": "rigwright-route",
+  "display_name": "Rigwright Route",
+  "description": "Selects exactly one atomic Rigwright workflow. Use when a request involves creating, improving, evaluating, migrating, prioritizing, or archiving a skill or plugin and the correct narrow Rigwright leaf must be chosen.",
+  "intent_owner": "Rigwright workflow selection",
+  "intent": "Select one eligible Rigwright leaf for the request.",
+  "outcome": "Return exactly one leaf identifier, or a bounded clarification or block when no leaf is eligible.",
+  "non_goals": [
+    "Author a skill or plugin",
+    "Repeat any selected leaf procedure",
+    "Evaluate, migrate, prioritize, archive, install, activate, or publish"
+  ],
+  "inputs": ["User request", "Lifecycle eligibility context"],
+  "outputs": ["One selected leaf identifier or bounded no-selection result"],
+  "permissions": {
+    "side_effect_class": "read-only",
+    "allowed_scope": "Read request and eligible Rigwright metadata only",
+    "owner_gates": []
+  },
+  "triggers": {
+    "positive": ["which Rigwright workflow should handle this", "create or improve a skill", "evaluate migrate prioritize or archive a skill"],
+    "negative": ["perform the selected authoring procedure", "install or activate a plugin"]
+  },
+  "lifecycle": {
+    "state": "candidate-sandbox",
+    "canonical_owner": "rigwright-route",
+    "intent_key": "rigwright.workflow-routing",
+    "scope": "cross-platform",
+    "surfaces": ["neutral", "claude-code", "codex"],
+    "routing_priority": 400,
+    "specificity": 60,
+    "supersedes": [],
+    "evidence_date": "2026-07-13",
+    "promotion_gate": "Paired cross-surface routing and collision evidence plus owner approval"
+  },
+  "instructions": [
+    "Classify the requested action as route, author-skill, author-plugin, evaluate, migrate, prioritize, or archive.",
+    "Reject any leaf that is ineligible under the supplied lifecycle context.",
+    "Select exactly one narrow leaf; ask one bounded clarification only when two outcomes would materially differ.",
+    "Return the selected leaf and a one-sentence scope reason, then delegate without repeating its procedure.",
+    "Return BLOCKED when the request requires an unimplemented future MCP, agent, hook, command, or app authoring leaf."
+  ],
+  "eval_path": "evals/evals.json",
+  "provenance": ["author-authoring-skills", "anthropic-skill-creator", "openai-skill-creator", "lifecycle-authority"]
+}

@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "request": {"intent_key": "skill.author", "scope": "cross-platform", "surface": "codex", "legacy_invocation": false, "sandbox": false},
+  "records": [
+    {"id": "current-author", "state": "current-authorized", "canonical_owner": true, "intent_key": "skill.author", "scope": "cross-platform", "surfaces": ["claude-code", "codex"], "routing_priority": 20, "specificity": 70, "evidence_date": "2026-07-01"},
+    {"id": "candidate-author", "state": "candidate-sandbox", "canonical_owner": false, "intent_key": "skill.author", "scope": "cross-platform", "surfaces": ["claude-code", "codex"], "routing_priority": 9999, "specificity": 100, "evidence_date": "2026-07-13"},
+    {"id": "legacy-author-alias", "state": "compatibility-alias", "canonical_owner": false, "intent_key": "skill.author", "scope": "cross-platform", "surfaces": ["codex"], "routing_priority": 10000, "specificity": 100, "evidence_date": "2026-07-13"},
+    {"id": "archived-author", "state": "archived-retained", "canonical_owner": false, "intent_key": "skill.author", "scope": "cross-platform", "surfaces": ["codex"], "routing_priority": 99999, "specificity": 100, "evidence_date": "2026-07-13"}
+  ]
+}

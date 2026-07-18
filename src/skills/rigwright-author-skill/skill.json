@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "id": "rigwright-author-skill",
+  "display_name": "Rigwright Author Skill",
+  "description": "Authors or improves one atomic neutral skill and emits requested Claude Code or Codex adapters. Use when a user asks to create, refactor, tighten, or add evals to a skill without installing or activating it.",
+  "intent_owner": "Atomic skill authoring",
+  "intent": "Create or improve one atomic neutral skill source.",
+  "outcome": "Produce one contract-valid skill, its eval set, and requested thin surface adapters.",
+  "non_goals": ["Create a plugin container", "Run promotion evaluation", "Install or activate a skill", "Author MCPs agents hooks commands or apps"],
+  "inputs": ["Concrete user intent and trigger examples", "Baseline artifact or explicit no-skill baseline", "Requested surfaces"],
+  "outputs": ["Neutral skill record", "Leaf-owned eval set", "Requested generated adapters", "Validation report"],
+  "permissions": {
+    "side_effect_class": "proposal-write",
+    "allowed_scope": "Owner-selected proposal or candidate-sandbox root only",
+    "owner_gates": ["Any live skill edit", "Installation", "Activation", "Promotion"]
+  },
+  "triggers": {
+    "positive": ["create a new atomic skill", "improve this bloated SKILL.md", "add evals and reliable triggers to one skill"],
+    "negative": ["package existing skills as a plugin", "compare candidate performance", "create an MCP server"]
+  },
+  "lifecycle": {
+    "state": "candidate-sandbox",
+    "canonical_owner": "rigwright-author-skill",
+    "intent_key": "skill.author-or-improve",
+    "scope": "cross-platform",
+    "surfaces": ["neutral", "claude-code", "codex"],
+    "routing_priority": 400,
+    "specificity": 90,
+    "supersedes": ["authoring-skills:create-improve"],
+    "evidence_date": "2026-07-13",
+    "promotion_gate": "Same-model paired authoring tasks on Claude Code and Codex plus owner approval"
+  },
+  "instructions": [
+    "Confirm the reusable intent, realistic positive triggers, near misses, bounded inputs, and one independently measurable outcome.",
+    "Record a no-skill or prior-version baseline before final prose and define at least three positive eval cases plus one realistic near miss.",
+    "Split the request when two outcomes can fail independently; record explicit non-goals for adjacent intents.",
+    "Author the neutral record first, keeping shared instructions concise, imperative, one reference level deep, and free of live dynamic shell injection.",
+    "Use source-visible deterministic scripts only for fragile repeatable behavior and state whether each resource is read or run.",
+    "Generate Claude Code and Codex adapters from the neutral source; keep Codex UI metadata in agents/openai.yaml and surface-only fields out of the neutral body.",
+    "Validate the contract, adapters, scripts, and eval set; return reviewable proposal files and evidence without installing or activating them."
+  ],
+  "eval_path": "evals/evals.json",
+  "provenance": ["author-authoring-skills", "anthropic-skill-creator", "openai-skill-creator", "lifecycle-authority"]
+}

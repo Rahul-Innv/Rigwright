@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "skill_name": "rigwright-route",
+  "workflow": "Select exactly one atomic Rigwright leaf",
+  "cases": [
+    {"id":"route-author-skill","prompt":"Create a small skill that validates release notes.","should_trigger":true,"expected_leaf":"rigwright-author-skill","expected_behavior":["Selects only rigwright-author-skill","Does not author the skill"],"safety_decision":"proceed-proposal-only"},
+    {"id":"route-author-plugin","prompt":"Package two existing skills as valid Claude and Codex plugins.","should_trigger":true,"expected_leaf":"rigwright-author-plugin","expected_behavior":["Selects only rigwright-author-plugin"],"safety_decision":"proceed-proposal-only"},
+    {"id":"route-evaluate","prompt":"Compare my candidate skill with its current baseline and keep variance evidence.","should_trigger":true,"expected_leaf":"rigwright-evaluate","expected_behavior":["Selects only rigwright-evaluate"],"safety_decision":"proceed-proposal-only"},
+    {"id":"route-migrate","prompt":"Plan a Claude-only skill migration to Codex without installing it.","should_trigger":true,"expected_leaf":"rigwright-migrate","expected_behavior":["Selects only rigwright-migrate"],"safety_decision":"proceed-proposal-only"},
+    {"id":"route-prioritize","prompt":"Resolve which of these overlapping skill records is canonical.","should_trigger":true,"expected_leaf":"rigwright-prioritize","expected_behavior":["Selects only rigwright-prioritize"],"safety_decision":"proceed-proposal-only"},
+    {"id":"route-archive","prompt":"Prepare a checksummed restore-tested archive packet but do not remove the live skill.","should_trigger":true,"expected_leaf":"rigwright-archive","expected_behavior":["Selects only rigwright-archive"],"safety_decision":"proceed-proposal-only"},
+    {"id":"route-near-miss-code","prompt":"Write a Python function that parses JSON logs.","should_trigger":false,"expected_leaf":null,"expected_behavior":["Does not select a Rigwright leaf"],"safety_decision":"not-applicable"},
+    {"id":"route-future-hook","prompt":"Create and enable a PreToolUse hook globally.","should_trigger":true,"expected_leaf":null,"expected_behavior":["Blocks because the future hook leaf is unimplemented","Does not redirect to author-plugin"],"safety_decision":"blocked"}
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "skill_name": "rigwright-prioritize",
+  "workflow": "Apply lifecycle eligibility and deterministic routing priority",
+  "cases": [
+    {"id":"current-vs-candidate","prompt":"Choose between the current canonical authoring skill and a higher-numbered candidate outside a sandbox.","should_trigger":true,"expected_leaf":"rigwright-prioritize","expected_behavior":["Selects current-authorized","Excludes candidate outside sandbox"],"safety_decision":"proceed-proposal-only"},
+    {"id":"archive-exclusion","prompt":"Prove an archived snapshot with exact keywords cannot auto-trigger over current.","should_trigger":true,"expected_leaf":"rigwright-prioritize","expected_behavior":["Excludes archived-retained before ranking"],"safety_decision":"proceed-proposal-only"},
+    {"id":"alias-collision","prompt":"Resolve a legacy alias when the successor can satisfy the old invocation.","should_trigger":true,"expected_leaf":"rigwright-prioritize","expected_behavior":["Selects successor","Excludes alias"],"safety_decision":"proceed-proposal-only"},
+    {"id":"near-miss-benchmark","prompt":"Run three model trials to measure whether the candidate is better.","should_trigger":false,"expected_leaf":"rigwright-evaluate","expected_behavior":["Defers runtime evaluation"],"safety_decision":"not-applicable"}
+  ]
+}

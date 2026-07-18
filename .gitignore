@@ -1,0 +1,25 @@
+# Python caches and local environments
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+
+# Local build and editor scratch
+build/
+dist/
+.local/
+.tmp/
+*.swp
+*~
+.DS_Store
+Thumbs.db
+
+# Generated validation evidence and packaging output are not tracked.
+artifacts/
+*.egg-info/
+
+# Machine-local source-capture configuration (see config/sources.example.json)
+config/sources.json

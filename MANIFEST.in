@@ -1,0 +1,8 @@
+include LICENSE README.md CHANGELOG.md VERSION
+graft adapters
+graft config
+graft contracts
+graft docs
+graft evals
+graft src
+global-exclude __pycache__ *.py[cod]

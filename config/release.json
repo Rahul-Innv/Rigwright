@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "product": "Rigwright",
+  "version": "0.1.0",
+  "release_state": "pre-release",
+  "author": "Rahul Krishna",
+  "copyright_holder": "Rahul Krishna",
+  "license": "MIT",
+  "canonical_host_url": null,
+  "public_security_reporting_channel": null,
+  "outward_actions_authorized": false
+}

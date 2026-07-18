@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "id": "rigwright-author-plugin",
+  "display_name": "Rigwright Author Plugin",
+  "description": "Authors and validates one Claude Code or Codex plugin container around existing or delegated atomic skills. Use when a user asks to scaffold, package, or repair a plugin manifest without installing it or altering a marketplace.",
+  "intent_owner": "Plugin container authoring",
+  "intent": "Create one surface-native plugin container and its validation evidence.",
+  "outcome": "Produce valid Claude Code and/or Codex plugin manifests that reference atomic skill payloads without duplicating skill authoring.",
+  "non_goals": ["Author the internal procedure of a skill", "Create MCP agents hooks commands or apps", "Edit a marketplace", "Install enable authenticate or reinstall a plugin"],
+  "inputs": ["Plugin purpose and surfaces", "Existing atomic skills or delegation results", "Explicit metadata supplied by the owner"],
+  "outputs": ["Surface-native plugin container", "Manifest validation report", "Deferred future-component list"],
+  "permissions": {
+    "side_effect_class": "proposal-write",
+    "allowed_scope": "Owner-selected proposal or candidate-sandbox root only",
+    "owner_gates": ["Marketplace write", "Installation", "Enablement", "Authentication", "MCP app hook command or agent creation"]
+  },
+  "triggers": {
+    "positive": ["create a dual-surface plugin", "scaffold a Codex plugin manifest", "package existing skills for Claude Code"],
+    "negative": ["write one skill procedure", "enable a hook or MCP server", "update my personal marketplace"]
+  },
+  "lifecycle": {
+    "state": "candidate-sandbox",
+    "canonical_owner": "rigwright-author-plugin",
+    "intent_key": "plugin.author-container",
+    "scope": "cross-platform",
+    "surfaces": ["neutral", "claude-code", "codex"],
+    "routing_priority": 400,
+    "specificity": 90,
+    "supersedes": [],
+    "evidence_date": "2026-07-13",
+    "promotion_gate": "Both native plugin validators, unsafe-request rejection, paired package tasks, and owner approval"
+  },
+  "instructions": [
+    "Confirm the target surfaces and use only the metadata the owner supplied or neutral safe defaults for proposal fixtures.",
+    "Delegate creation or repair of each contained skill to rigwright-author-skill; do not embed a second skill authoring procedure.",
+    "Create .claude-plugin/plugin.json with root-level skill components for Claude Code and .codex-plugin/plugin.json with Codex-required interface fields for Codex.",
+    "Include companion MCP or app fields only when a separately approved future leaf has created and validated the companion file; do not emit hooks commands agents apps or MCPs in the initial system.",
+    "Do not create or edit marketplace files, install, enable, authenticate, cachebust, or reinstall.",
+    "Reject deceptive, unauthorized, exfiltrating, fetch-and-execute, bypass-permission, or silent-global-mutation requests; explain the refusal transparently and offer a safe opt-in, least-privilege, local-first alternative when one exists.",
+    "Run surface-native and Rigwright validators and return a proposal package plus exact hashes."
+  ],
+  "eval_path": "evals/evals.json",
+  "provenance": ["anthropic-plugin-skill-development", "anthropic-plugin-structure", "openai-plugin-creator", "lifecycle-authority"]
+}

@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "id": "rigwright-evaluate",
+  "display_name": "Rigwright Evaluate",
+  "description": "Evaluates a frozen skill or plugin candidate against no-skill, current, or prior-version baselines. Use when a user asks for trigger tests, regression evidence, variance, benchmark comparison, blind review, or promotion evidence.",
+  "intent_owner": "Skill and plugin evaluation",
+  "intent": "Measure one frozen candidate against appropriate frozen baselines.",
+  "outcome": "Produce reproducible results, review artifacts, and permanent regression cases without rewriting or promoting the candidate.",
+  "non_goals": ["Author or revise the candidate", "Promote install or activate", "Choose lifecycle priority", "Execute a provider without approval"],
+  "inputs": ["Frozen candidate", "Frozen baselines", "Task artifacts and eval contract", "Approved execution environment"],
+  "outputs": ["Per-run grades", "Aggregate metrics and variance", "Human-review artifact", "Regression cases", "Limitations"],
+  "permissions": {
+    "side_effect_class": "proposal-write",
+    "allowed_scope": "Evaluation artifacts in the declared sandbox",
+    "owner_gates": ["Provider execution", "Private data access", "Live system mutation", "Promotion"]
+  },
+  "triggers": {
+    "positive": ["benchmark this skill against baseline", "test trigger precision and near misses", "compare old and new plugin behavior with variance"],
+    "negative": ["rewrite the skill now", "promote this candidate", "pick the canonical owner without running evals"]
+  },
+  "lifecycle": {
+    "state": "candidate-sandbox",
+    "canonical_owner": "rigwright-evaluate",
+    "intent_key": "skill-plugin.evaluate",
+    "scope": "cross-platform",
+    "surfaces": ["neutral", "claude-code", "codex"],
+    "routing_priority": 400,
+    "specificity": 90,
+    "supersedes": ["authoring-skills:evaluate"],
+    "evidence_date": "2026-07-13",
+    "promotion_gate": "Offline gate plus approved paired runtime evidence and human review"
+  },
+  "instructions": [
+    "Freeze candidate, baselines, model, effort, task artifacts, repository state, tools, permissions, and timing plan before running.",
+    "Use no skill for a new-skill baseline, the original snapshot for an improvement baseline, and the strongest applicable source when comparing creators.",
+    "Run deterministic validators and programmatic assertions before subjective grading; require evidence for every pass.",
+    "When provider execution is approved, start candidate and baseline in the same turn where supported and capture tokens, raw and model-visible bytes, latency, retries, errors, and variance.",
+    "Generate human-review artifacts before revising based on evaluator interpretation; use blind comparison only without source identity or intended rationale.",
+    "Add every confirmed failure as a permanent regression case and report non-discriminating or flaky assertions.",
+    "Return results and limitations without editing, promoting, installing, or activating the candidate."
+  ],
+  "eval_path": "evals/evals.json",
+  "provenance": ["author-authoring-skills", "anthropic-skill-creator", "openai-skill-creator", "lifecycle-authority"]
+}

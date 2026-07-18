@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "_comment": "Example source-capture configuration for the optional provenance fingerprint tool. Copy this file to config/sources.json and replace each path with a readable local source root. Paths are machine-local and config/sources.json should never be committed.",
+  "sources": [
+    {
+      "id": "example-claude-skill",
+      "path": "/path/to/your/.claude/skills/example-skill",
+      "authority_type": "creator",
+      "surface": "claude-code",
+      "trust_tier": "owner-authored-read-only-source",
+      "version_evidence": "describe how the captured version is identified",
+      "license": "state the license observed in the captured leaf",
+      "execute_during_extraction": false
+    },
+    {
+      "id": "example-codex-skill",
+      "path": "/path/to/your/.codex/skills/.system/example-skill",
+      "authority_type": "creator",
+      "surface": "codex",
+      "trust_tier": "system-read-only-source",
+      "version_evidence": "describe how the captured version is identified",
+      "license": "state the license observed in the captured leaf",
+      "execute_during_extraction": false
+    }
+  ]
+}

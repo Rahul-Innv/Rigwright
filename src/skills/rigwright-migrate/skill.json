@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "id": "rigwright-migrate",
+  "display_name": "Rigwright Migrate",
+  "description": "Produces a reviewable cross-surface migration plan for an existing skill or plugin. Use when a user asks to port Claude-only behavior to Codex, preserve a legacy name, split shared from surface-specific behavior, or plan compatibility without live cutover.",
+  "intent_owner": "Skill and plugin migration planning",
+  "intent": "Translate one existing skill or plugin into a neutral source and surface-specific adapter proposal.",
+  "outcome": "Produce a provenance-preserving migration, successor, compatibility, and rollback map without changing the live installation.",
+  "non_goals": ["Perform live cutover", "Move or disable live files", "Create junctions or aliases", "Install or activate", "Evaluate promotion quality"],
+  "inputs": ["Existing skill or plugin tree", "Target surfaces", "Lifecycle record and references", "Owner compatibility requirements"],
+  "outputs": ["Shared versus surface-only classification", "Neutral source proposal", "Successor and alias map", "Rollback and cutover plan"],
+  "permissions": {
+    "side_effect_class": "proposal-write",
+    "allowed_scope": "Declared migration sandbox and evidence root only",
+    "owner_gates": ["Live file move", "Compatibility alias or junction", "Removal from discovery", "Installation", "Cutover"]
+  },
+  "triggers": {
+    "positive": ["migrate a Claude skill to Codex", "split a plugin into neutral and surface adapters", "plan a compatibility alias for an old skill name"],
+    "negative": ["execute the cutover now", "archive and remove the live skill", "benchmark the migrated candidate"]
+  },
+  "lifecycle": {
+    "state": "candidate-sandbox",
+    "canonical_owner": "rigwright-migrate",
+    "intent_key": "skill-plugin.migrate",
+    "scope": "cross-platform",
+    "surfaces": ["neutral", "claude-code", "codex"],
+    "routing_priority": 400,
+    "specificity": 90,
+    "supersedes": [],
+    "evidence_date": "2026-07-13",
+    "promotion_gate": "Cross-surface fixture migrations, compatibility collision tests, rollback evidence, and owner approval"
+  },
+  "instructions": [
+    "Fingerprint and statically inspect the complete source tree; do not execute bundled scripts during intake.",
+    "Classify each practice or file as shared, claude-only, codex-only, rejected, or superseded and retain source evidence.",
+    "Extract one neutral intent and outcome per destination leaf; split independently failing responsibilities before generating adapters.",
+    "Map Claude invocation fields and dynamic behavior only to a reviewed Claude adapter; map Codex UI and invocation policy to agents/openai.yaml.",
+    "Create exact successor, compatibility, discovery, cutover, and rollback steps; keep aliases lower priority, time-bounded, and collision-tested.",
+    "Return proposal files and unresolved conflicts without moving live files, creating junctions, installing, or changing lifecycle state."
+  ],
+  "eval_path": "evals/evals.json",
+  "provenance": ["author-authoring-skills", "anthropic-plugin-structure", "openai-skill-creator", "lifecycle-authority"]
+}

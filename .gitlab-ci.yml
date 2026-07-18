@@ -1,0 +1,35 @@
+# Offline-only candidate verification. The selected runner must already
+# contain Python 3.12+, the Claude plugin validator, and the Codex plugin
+# validator. This pipeline installs nothing, uploads no package artifact, and
+# performs no provider, marketplace, release, publication, or live-skill step.
+
+stages:
+  - verify
+
+variables:
+  PYTHONDONTWRITEBYTECODE: "1"
+  PYTHONHASHSEED: "0"
+  PIP_NO_INDEX: "1"
+  PIP_DISABLE_PIP_VERSION_CHECK: "1"
+  RIGWRIGHT_CLAUDE_CLI: "claude"
+  RIGWRIGHT_CODEX_PLUGIN_VALIDATOR: ""
+
+rigwright-offline-gates:
+  stage: verify
+  tags:
+    - rigwright-offline
+  script:
+    - python3 -B tools/validate_contract.py
+    - python3 -B tools/build_adapters.py --mode normal --output-root artifacts/build-normal
+    - python3 -B tools/build_adapters.py --mode candidate-sandbox --output-root artifacts/build
+    - python3 -B tools/validate_packages.py
+    - python3 -B tools/verify_determinism.py
+    - python3 -B tools/validate_runtime_fixtures.py
+    - python3 -B tools/run_evals.py
+    - test -n "$RIGWRIGHT_CLAUDE_CLI"
+    - command -v "$RIGWRIGHT_CLAUDE_CLI"
+    - '"$RIGWRIGHT_CLAUDE_CLI" plugin validate artifacts/build/claude-code/rigwright'
+    - test -n "$RIGWRIGHT_CODEX_PLUGIN_VALIDATOR"
+    - test -f "$RIGWRIGHT_CODEX_PLUGIN_VALIDATOR"
+    - python3 -B "$RIGWRIGHT_CODEX_PLUGIN_VALIDATOR" artifacts/build/codex/rigwright
+  timeout: 20m

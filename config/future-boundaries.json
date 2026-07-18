@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "unimplemented_future_leaves": [
+    {"id":"rigwright-author-mcp","required_gate":"transport auth data tool-surface rollback and provider eval contract"},
+    {"id":"rigwright-author-agent","required_gate":"agent context permission delegation and termination eval contract"},
+    {"id":"rigwright-author-hook","required_gate":"automatic execution timeout side-effect and fault-test contract"},
+    {"id":"rigwright-author-command","required_gate":"explicit invocation argument and command lifecycle contract"},
+    {"id":"rigwright-author-app","required_gate":"app identity UI auth privacy and external-data contract"}
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "id": "rigwright-prioritize",
+  "display_name": "Rigwright Prioritize",
+  "description": "Classifies skill lifecycle eligibility and selects the deterministic canonical routing owner. Use when records overlap, a candidate competes with a current skill, aliases collide, or archived and quarantined sources must be excluded.",
+  "intent_owner": "Lifecycle eligibility and routing priority application",
+  "intent": "Apply the lifecycle and priority contract to a bounded set of capability records.",
+  "outcome": "Select at most one eligible canonical owner or return an explicit collision or ineligibility result.",
+  "non_goals": ["Install enable or activate", "Promote a candidate", "Move or archive files", "Discover authority from folder or alphabetical order"],
+  "inputs": ["Capability records", "Request intent scope and surface", "Explicit sandbox or legacy invocation context"],
+  "outputs": ["Eligibility decisions", "Selected owner or collision", "Priority receipt"],
+  "permissions": {
+    "side_effect_class": "read-only",
+    "allowed_scope": "Read declared capability records and emit a decision receipt",
+    "owner_gates": ["Lifecycle mutation", "Promotion", "Installation or activation"]
+  },
+  "triggers": {
+    "positive": ["which overlapping skill is canonical", "prove a candidate cannot outrank current", "resolve an alias or archive routing collision"],
+    "negative": ["run the candidate benchmark", "archive the losing skill", "install the selected plugin"]
+  },
+  "lifecycle": {
+    "state": "candidate-sandbox",
+    "canonical_owner": "rigwright-prioritize",
+    "intent_key": "skill.lifecycle-priority",
+    "scope": "cross-platform",
+    "surfaces": ["neutral", "claude-code", "codex"],
+    "routing_priority": 400,
+    "specificity": 95,
+    "supersedes": [],
+    "evidence_date": "2026-07-13",
+    "promotion_gate": "Adversarial lifecycle and collision tests plus lifecycle-authority owner approval"
+  },
+  "instructions": [
+    "Validate required lifecycle fields and fail closed when more than one current-authorized record owns the same intent, scope, and surface.",
+    "Exclude archived-retained, quarantined-untrusted, rejected, unavailable, unauthorized, and wrong-surface records before ranking.",
+    "Prefer an exact explicit current-authorized owner, then a matching authorized project or domain owner, then the current cross-platform canonical owner.",
+    "Admit candidate-sandbox only in an explicit evaluation sandbox and keep it below a matching current owner regardless of numeric priority.",
+    "Admit a compatibility-alias only for a legacy invocation the successor cannot satisfy.",
+    "Within one eligible class prefer higher specificity, then fresher evidence, then lower context and tool cost; use stable ID only as a deterministic final tie break.",
+    "Return the selected owner and exclusions as a receipt without changing lifecycle state or activation."
+  ],
+  "eval_path": "evals/evals.json",
+  "provenance": ["lifecycle-authority", "author-authoring-skills", "openai-skill-creator"]
+}

@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "id": "rigwright-archive",
+  "display_name": "Rigwright Archive",
+  "description": "Creates a copy-only retained packet with hashes, provenance, successor mapping, and restore evidence. Use when a user asks to prepare or qualify an archive without deleting files, removing discovery, or changing live lifecycle state.",
+  "intent_owner": "Copy-only archive packet creation and restore qualification",
+  "intent": "Create one immutable proposed archive packet for a bounded source tree.",
+  "outcome": "Produce complete file hashes, provenance, successor mapping, and a successful isolated restore verification.",
+  "non_goals": ["Delete an archive", "Remove a live skill from discovery", "Change lifecycle state", "Cut over or install a successor"],
+  "inputs": ["Stable source tree", "Destination proposal root", "Successor mapping", "Retention and restore requirements"],
+  "outputs": ["Copy-only payload", "Manifest and checksums", "Successor map", "Restore verification report"],
+  "permissions": {
+    "side_effect_class": "proposal-write",
+    "allowed_scope": "Declared archive proposal and isolated restore-test roots only",
+    "owner_gates": ["Live archive creation", "Removal from discovery", "Lifecycle state change", "Deletion", "Cutover"]
+  },
+  "triggers": {
+    "positive": ["prepare a checksummed archive packet", "test restoring a retained skill snapshot", "map an archived skill to successors without deleting it"],
+    "negative": ["delete old archives", "disable the live skill", "promote the successor"]
+  },
+  "lifecycle": {
+    "state": "candidate-sandbox",
+    "canonical_owner": "rigwright-archive",
+    "intent_key": "skill.archive-qualify",
+    "scope": "cross-platform",
+    "surfaces": ["neutral", "claude-code", "codex"],
+    "routing_priority": 400,
+    "specificity": 95,
+    "supersedes": [],
+    "evidence_date": "2026-07-13",
+    "promotion_gate": "Hash-complete packets, isolated restore tests, retention policy, and owner approval"
+  },
+  "instructions": [
+    "Require a qualifying stable fingerprint before copying and stop if the source changes.",
+    "Copy every source file as inert payload without executing scripts or loading it as instructions.",
+    "Record relative path, byte length, SHA-256, provenance, source state, successor mapping, and the explicit label copy-only-not-archived.",
+    "Restore the payload into an isolated proposal directory and compare the complete manifest byte for byte.",
+    "Report missing, extra, or changed files as failure and retain the failed evidence.",
+    "Return separate later commands and approvals for live snapshot, removal from discovery, lifecycle transition, compatibility alias, cutover, or deletion; execute none of them."
+  ],
+  "eval_path": "evals/evals.json",
+  "provenance": ["lifecycle-authority", "author-authoring-skills"]
+}

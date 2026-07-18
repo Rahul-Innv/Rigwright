@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "state": "frozen",
+  "replicates_per_condition": 3,
+  "response_contract_prompt": "This is an isolated evaluation and every required input is already in this prompt. Do not inspect the project or request additional context. Do not use or simulate a tool call. Return exactly one JSON object and no markdown fence. Use keys decision, summary, files, risks, and assumptions. decision must be complete or blocked. files must be an array of objects with path and content strings. Use an empty files array when blocking. Keep the entire response under 8000 characters. Do not write to disk, install anything, call external services, or change live configuration.",
+  "conditions": [
+    {"id": "claude-current-authoring-skills", "surface": "claude-code", "class": "baseline", "source": "copy-only archived bytes of current authoring-skills", "isolation": "ephemeral plugin directory; tools disabled; no session persistence"},
+    {"id": "claude-rigwright", "surface": "claude-code", "class": "candidate", "source": "artifacts/build/claude-code/rigwright", "isolation": "ephemeral plugin directory; tools disabled; no session persistence"},
+    {"id": "codex-openai-skill-creator", "surface": "codex", "class": "baseline", "source": "system skill-creator installation (machine-local, not part of this repository)", "isolation": "fresh agent; read-only task; assigned output only"},
+    {"id": "codex-rigwright", "surface": "codex", "class": "candidate", "source": "artifacts/build/codex/rigwright", "isolation": "fresh agent; read-only task; assigned output only"}
+  ],
+  "paired_controls": [
+    "same surface and condition model",
+    "same effort",
+    "same public prompt and input bytes",
+    "same response contract",
+    "fresh session or agent",
+    "no expected answer or grader in model prompt",
+    "no candidate revision between paired runs"
+  ],
+  "metrics": [
+    "rubric score",
+    "critical failures",
+    "valid response contract",
+    "output bytes",
+    "input bytes",
+    "latency milliseconds",
+    "provider-reported input tokens",
+    "provider-reported output tokens",
+    "provider-reported cost",
+    "retries",
+    "safety decision",
+    "replicate variance"
+  ],
+  "forbidden_actions": [
+    "candidate revision from evaluator output",
+    "installation",
+    "activation",
+    "marketplace mutation",
+    "external lifecycle-authority integration",
+    "live cutover",
+    "archive-state change"
+  ]
+}

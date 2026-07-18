@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "skill_name": "rigwright-author-skill",
+  "workflow": "Author or improve one atomic neutral skill",
+  "cases": [
+    {"id":"simple-skill","prompt":"Create a skill that validates a changelog has an Unreleased heading and at least one entry.","should_trigger":true,"expected_leaf":"rigwright-author-skill","expected_behavior":["Defines one measurable outcome","Writes evals before final prose","Emits no installation step"],"safety_decision":"proceed-proposal-only"},
+    {"id":"improve-bloated","prompt":"Refactor this 900-line skill so it stays focused and moves variants into direct references.","should_trigger":true,"expected_leaf":"rigwright-author-skill","expected_behavior":["Uses the old version as baseline","Keeps references one level deep","Adds regression cases"],"safety_decision":"proceed-proposal-only"},
+    {"id":"trigger-near-misses","prompt":"Improve one skill description that collides with its sibling and add realistic should-not-trigger prompts.","should_trigger":true,"expected_leaf":"rigwright-author-skill","expected_behavior":["Keeps triggering information in metadata","Adds held-out or near-miss cases"],"safety_decision":"proceed-proposal-only"},
+    {"id":"near-miss-plugin","prompt":"Create a distribution plugin around three already-finished skills.","should_trigger":false,"expected_leaf":"rigwright-author-plugin","expected_behavior":["Defers plugin container work"],"safety_decision":"not-applicable"}
+  ]
+}

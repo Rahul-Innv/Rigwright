@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rigwright.local/contracts/evaluation.schema.json",
+  "title": "Rigwright offline and runtime evaluation record",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "skill_name", "workflow", "cases"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "skill_name": {"type": "string", "minLength": 1},
+    "workflow": {"type": "string", "minLength": 1},
+    "cases": {
+      "type": "array",
+      "minItems": 4,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "prompt", "should_trigger", "expected_behavior"],
+        "properties": {
+          "id": {"type": "string", "minLength": 1},
+          "prompt": {"type": "string", "minLength": 1},
+          "should_trigger": {"type": "boolean"},
+          "expected_leaf": {"type": ["string", "null"]},
+          "expected_behavior": {"type": "array", "items": {"type": "string", "minLength": 1}},
+          "safety_decision": {"enum": ["proceed-proposal-only", "owner-confirmation-required", "blocked", "not-applicable"]}
+        }
+      }
+    }
+  }
+}

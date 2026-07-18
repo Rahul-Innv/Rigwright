@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "measurement": "Static documented-practice coverage only; not model execution quality.",
+  "required_practices": [
+    "one-intent-one-outcome",
+    "explicit-non-goals",
+    "evals-before-final-prose",
+    "no-skill-or-old-version-baseline",
+    "three-positive-and-near-miss",
+    "same-turn-paired-runtime-plan",
+    "timing-token-byte-retry-variance-capture",
+    "formal-evidence-grading",
+    "human-review-before-revision",
+    "blind-comparison-option",
+    "held-out-trigger-optimization",
+    "progressive-disclosure",
+    "degrees-of-freedom-by-fragility",
+    "tested-source-visible-scripts",
+    "fresh-agent-no-answer-leakage",
+    "side-effect-and-permission-gates",
+    "neutral-contract-thin-adapters",
+    "surface-native-plugin-manifests",
+    "codex-openai-yaml-separation",
+    "lifecycle-eligibility-priority",
+    "candidate-and-archive-exclusion",
+    "hash-complete-archive-restore"
+  ],
+  "baselines": [
+    {"id":"no-creator","supports":[]},
+    {"id":"current-authoring-skills","supports":["evals-before-final-prose","no-skill-or-old-version-baseline","three-positive-and-near-miss","same-turn-paired-runtime-plan","timing-token-byte-retry-variance-capture","formal-evidence-grading","human-review-before-revision","held-out-trigger-optimization","progressive-disclosure","degrees-of-freedom-by-fragility","tested-source-visible-scripts","side-effect-and-permission-gates"]},
+    {"id":"anthropic-skill-creator","supports":["no-skill-or-old-version-baseline","same-turn-paired-runtime-plan","timing-token-byte-retry-variance-capture","formal-evidence-grading","human-review-before-revision","blind-comparison-option","held-out-trigger-optimization","progressive-disclosure","tested-source-visible-scripts"]},
+    {"id":"openai-skill-creator","supports":["progressive-disclosure","degrees-of-freedom-by-fragility","tested-source-visible-scripts","fresh-agent-no-answer-leakage","codex-openai-yaml-separation"]},
+    {"id":"anthropic-plugin-dev","supports":["progressive-disclosure","surface-native-plugin-manifests"]},
+    {"id":"openai-plugin-creator","supports":["tested-source-visible-scripts","surface-native-plugin-manifests","codex-openai-yaml-separation"]},
+    {"id":"rigwright-candidate","supports":["one-intent-one-outcome","explicit-non-goals","evals-before-final-prose","no-skill-or-old-version-baseline","three-positive-and-near-miss","same-turn-paired-runtime-plan","timing-token-byte-retry-variance-capture","formal-evidence-grading","human-review-before-revision","blind-comparison-option","held-out-trigger-optimization","progressive-disclosure","degrees-of-freedom-by-fragility","tested-source-visible-scripts","fresh-agent-no-answer-leakage","side-effect-and-permission-gates","neutral-contract-thin-adapters","surface-native-plugin-manifests","codex-openai-yaml-separation","lifecycle-eligibility-priority","candidate-and-archive-exclusion","hash-complete-archive-restore"]}
+  ]
+}

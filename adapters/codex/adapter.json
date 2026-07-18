@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "surface": "codex",
+  "manifest": ".codex-plugin/plugin.json",
+  "skill_location": "skills/<skill-id>/SKILL.md",
+  "ui_metadata": "skills/<skill-id>/agents/openai.yaml",
+  "candidate_build_mode": "explicit candidate-sandbox only",
+  "normal_eligible_state": "current-authorized",
+  "skill_frontmatter": ["name", "description"],
+  "candidate_implicit_invocation": false,
+  "plugin_version_policy": "fixed pre-release version 0.1.0; no cachebuster, reinstall, tag, release, or publication",
+  "marketplace": "not generated",
+  "future_components": ["mcp", "agent", "hook", "command", "app"]
+}

@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rigwright.local/evals/runtime/result.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["decision", "summary", "files", "risks", "assumptions"],
+  "properties": {
+    "decision": {"enum": ["complete", "blocked"]},
+    "summary": {"type": "string"},
+    "files": {"type": "array", "items": {"type": "object", "additionalProperties": false, "required": ["path", "content"], "properties": {"path": {"type": "string", "minLength": 1}, "content": {"type": "string"}}}},
+    "risks": {"type": "array", "items": {"type": "string"}},
+    "assumptions": {"type": "array", "items": {"type": "string"}}
+  }
+}
