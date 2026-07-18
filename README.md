@@ -8,74 +8,149 @@
 [![PyPI version](https://img.shields.io/pypi/v/rigwright)](https://pypi.org/project/rigwright/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-> A proposal-only system for authoring and evaluating small atomic skills across Claude Code and Codex.
+Rigwright authors and evaluates small, single-purpose skills for AI coding agents — the reusable instruction files that Claude Code and Codex load to handle one kind of task well. In practice, skill files sprawl into catch-all documents where no one can tell whether an edit helped, and each platform needs the same skill re-packaged by hand in its own format. Rigwright gives every skill one measurable outcome and its own eval set (test prompts with expected behavior), then generates the packaging for each platform from a single neutral source — validated against both platforms' native schemas.
 
-Rigwright combines one neutral skill contract with thin surface adapters. Each capability stays independently measurable, and lifecycle state and routing priority stay with an external lifecycle authority rather than with this repository.
+## One skill, end to end
 
-**Current state:** version `0.1.0` is a pre-release candidate. Nothing in this repository installs, enables, exposes, promotes, or publishes a skill or plugin. Generated packages are offline evaluation evidence, not installations.
+Every skill is one neutral JSON record. Here is `rigwright-author-skill`, the skill that authors other skills (trimmed):
 
-## Seven atomic leaves
+```jsonc
+// src/skills/rigwright-author-skill/skill.json
+{
+  "id": "rigwright-author-skill",
+  "intent": "Create or improve one atomic neutral skill source.",
+  "outcome": "Produce one contract-valid skill, its eval set, and requested thin surface adapters.",
+  "non_goals": ["Create a plugin container", "Run promotion evaluation", "Install or activate a skill", /* … */],
+  "instructions": [
+    "Confirm the reusable intent, realistic positive triggers, near misses, bounded inputs, and one independently measurable outcome.",
+    "Record a no-skill or prior-version baseline before final prose and define at least three positive eval cases plus one realistic near miss.",
+    // …
+  ],
+  "eval_path": "evals/evals.json"
+}
+```
 
-| Leaf | Owns one outcome | Does not own |
-|---|---|---|
-| `rigwright-route` | Select exactly one eligible Rigwright leaf or return a bounded block. | Authoring, execution, installation, or promotion. |
-| `rigwright-author-skill` | Produce one contract-valid atomic skill with adapters and evals. | Plugin containers, promotion evaluation, or activation. |
-| `rigwright-author-plugin` | Produce one surface-native plugin container around existing skills. | MCPs, agents, hooks, commands, apps, or marketplaces. |
-| `rigwright-evaluate` | Compare one frozen candidate with frozen baselines and retain regressions. | Rewriting or promoting the candidate. |
-| `rigwright-migrate` | Produce a compatibility-preserving successor and rollback proposal. | Live cutover, file movement, or discovery changes. |
-| `rigwright-prioritize` | Select at most one lifecycle-eligible canonical owner. | Installation, enablement, or candidate promotion. |
-| `rigwright-archive` | Create a copy-only packet with hashes and restore proof. | Deletion, live archive state, or removal from discovery. |
+One command builds all seven records into platform-native packages:
 
-Future MCP, agent, hook, command, and app authoring remains separately gated and absent from the source tree; the validator fails if such a leaf appears before its gate opens.
+```console
+$ python -B tools/build_adapters.py --mode candidate-sandbox --output-root artifacts/build
+adapter build candidate-sandbox: 7 included, 0 excluded
+```
 
-## Authority flow
+For Claude Code, that generates a plugin manifest plus one `SKILL.md` per skill (trimmed):
+
+```markdown
+<!-- artifacts/build/claude-code/rigwright/skills/rigwright-author-skill/SKILL.md -->
+---
+name: rigwright-author-skill
+description: "Authors or improves one atomic neutral skill and emits requested Claude Code or Codex adapters. Use when a user asks to create, refactor, tighten, or add evals to a skill without installing or activating it."
+---
+
+# Rigwright Author Skill
+
+Create or improve one atomic neutral skill source.
+
+## Procedure
+
+1. Confirm the reusable intent, realistic positive triggers, near misses, bounded inputs, and one independently measurable outcome.
+2. Record a no-skill or prior-version baseline before final prose and define at least three positive eval cases plus one realistic near miss.
+   …
+
+This is a generated `claude-code` adapter. Edit the neutral `src/skills/rigwright-author-skill/skill.json` source instead of this file.
+```
+
+The Codex package carries the same skill body under Codex's own manifest layout, plus the UI metadata Codex keeps in a separate file:
+
+```yaml
+# artifacts/build/codex/rigwright/skills/rigwright-author-skill/agents/openai.yaml
+interface:
+  display_name: "Rigwright Author Skill"
+  short_description: "Use Rigwright Author Skill workflow"
+  default_prompt: "Use $rigwright-author-skill for this bounded proposal task."
+policy:
+  allow_implicit_invocation: false
+```
+
+Each skill ships its own eval set — prompts that must trigger it and realistic near misses that must not — and one command replays them all:
+
+```console
+$ python -B tools/run_evals.py
+offline evals passed: 59 assertions, 7 near misses, 6 fixed tasks
+```
+
+All output above is from a real run on this tree.
+
+## The seven skills
+
+| Skill | What it does |
+|---|---|
+| `rigwright-route` | Picks which single Rigwright skill should handle a request. |
+| `rigwright-author-skill` | Writes or improves one skill, with its eval set and platform adapters. |
+| `rigwright-author-plugin` | Wraps existing skills into one platform-native plugin container. |
+| `rigwright-evaluate` | Compares a frozen candidate skill against frozen baselines and records regressions. |
+| `rigwright-migrate` | Plans a backward-compatible successor for a skill, with a rollback path. |
+| `rigwright-prioritize` | Picks which one skill owns an intent when several overlap. |
+| `rigwright-archive` | Packages a retiring skill as a hash-verified copy with restore proof. |
+
+Each skill is deliberately narrow: anything beyond its one outcome — installing, activating, promoting — is out of scope by contract, and the validator enforces those boundaries. The per-skill boundary lists are in [STATUS.md](STATUS.md).
+
+## How it works
 
 ```mermaid
 flowchart LR
-  A["Neutral contracts and seven source leaves"] --> B["Deterministic validation"]
-  B --> C{"Explicit build mode"}
-  C -- "normal" --> D["Current-authorized records only"]
-  C -- "candidate-sandbox" --> E["Claude Code candidate package"]
-  C -- "candidate-sandbox" --> F["Codex candidate package"]
-  G["External lifecycle and priority authority"] --> C
-  E --> H["Offline evaluation evidence"]
-  F --> H
-  H --> I["Owner review and separate promotion gate"]
+  A["Neutral sources<br>src/skills/*/skill.json"] --> B["Adapter builder<br>tools/build_adapters.py"]
+  B --> C["Claude Code package"]
+  B --> D["Codex package"]
+  C --> E["Validators<br>127 contract + 224 package checks"]
+  D --> E
+  E --> F["Eval report<br>59 assertions"]
 ```
 
-Folder presence is not activation. A normal build excludes candidate, alias, archived, quarantined, rejected, and unavailable records. An external lifecycle authority remains the lifecycle and priority owner.
+The neutral record is the single source of truth; generated files say so and point back to it. Builds are deterministic — rebuilding produces byte-identical trees and archives, and `tools/verify_determinism.py` proves it. Beyond Rigwright's own validators, a manual CI job runs each platform's native validator (`claude plugin validate` and the Codex plugin validator) against the generated packages.
 
 ## Install
 
-The CLI is published on PyPI as [`rigwright`](https://pypi.org/project/rigwright/) and requires Python 3.12 or newer:
+The CLI is on PyPI as [`rigwright`](https://pypi.org/project/rigwright/) and needs Python 3.12+:
 
 ```sh
 pip install rigwright
 ```
 
-Run it from a disposable clone or worktree of this repository:
+Run the complete offline gate from a clone of this repository — `rigwright gate`, or with no install at all:
 
-```sh
-rigwright gate            # complete offline gate
-rigwright validate-contract
-rigwright build-adapters --mode candidate-sandbox
+```console
+$ python tools/run_all.py
+offline gate PASS: 8/8 commands
 ```
 
-The same gate also runs without installing anything: `python tools/run_all.py`. The complete gate writes reproducible build and validation evidence under `artifacts/` (untracked). It does not install a generated package.
+The eight commands and their current one-line results:
 
-For the exact current counts and the cache-free assessment pattern, see [Validation](docs/public/validation.md).
+```text
+source fingerprint skipped: no config/sources.json
+contract validation passed: 127 checks, 7 leaves, 32 eval cases
+adapter build normal: 0 included, 7 excluded
+adapter build candidate-sandbox: 7 included, 0 excluded
+package validation passed: 224 checks
+determinism passed: 2 surface packages
+runtime fixtures passed: 6 tasks, 4 conditions, 3 replicates
+offline evals passed: 59 assertions, 7 near misses, 6 fixed tasks
+```
+
+Evidence is written under `artifacts/` (untracked). See [Validation](docs/public/validation.md) for the cache-free assessment pattern.
+
+**Status:** `0.1.0` is a pre-release candidate on PyPI — the seven skills are proposals under review, and nothing in this repository installs or activates anything; full current state in [STATUS.md](STATUS.md).
 
 ## Safety and limitations
 
-- `0.1.0` is a pre-release, published to PyPI as `rigwright`. No git tag, host Release, skill installation, or promotion exists.
-- Original Rigwright material is MIT licensed under Rahul Krishna. Captured and imported material retains its original terms and is not relicensed; raw captures are retained privately and are not part of this repository.
-- An internal blinded runtime evaluation of candidate and baseline conditions was run on both surfaces. It does not authorize promotion, and producing Codex plugin manifests that pass the native validator for a dual-surface plugin remains an open problem. See [Conflicts and open problems](docs/conflicts-and-blockers.md).
-- The offline gates prove deterministic contract and fixture coverage only. They are not adoption, production, or model-superiority claims.
-- Generated packages under `artifacts/` are evaluation evidence, not installations or marketplace distributions.
-- No dedicated public security-reporting contact has been designated yet; report privately through the GitLab project rather than a public issue. See [Security policy](SECURITY.md).
+- Generated packages under `artifacts/` are offline evaluation evidence, not installations. Which skill version is live is decided outside this repository, by the owner's separate lifecycle registry — see [STATUS.md](STATUS.md).
+- **Open problem:** producing Codex plugin manifests that pass Codex's native validator for a dual-surface plugin. Rigwright's own generated Codex package passes the captured validators, but that is candidate-local evidence and does not settle the general case. See [Conflicts and open problems](docs/conflicts-and-blockers.md).
+- The offline gates prove deterministic contract and fixture coverage; they are not adoption, production, or model-quality claims. An internal blinded runtime evaluation was run on both platforms; it does not authorize promotion.
+- Original material is MIT licensed under Rahul Krishna. Captured third-party material retains its original terms and is not relicensed; see [third-party notices](THIRD_PARTY_NOTICES.md).
+- No dedicated public security contact exists yet; report privately through the GitLab project rather than a public issue. See [Security policy](SECURITY.md).
 
 ## Project documents
 
+- [Status](STATUS.md)
 - [Architecture](docs/public/architecture.md)
 - [Configuration](docs/public/configuration.md)
 - [Validation](docs/public/validation.md)
@@ -85,4 +160,4 @@ For the exact current counts and the cache-free assessment pattern, see [Validat
 - [Roadmap](ROADMAP.md)
 - [Changelog](CHANGELOG.md)
 
-Rigwright is authored by Rahul Krishna and distributed under the [MIT License](LICENSE). See [third-party notices](THIRD_PARTY_NOTICES.md) for retained-source boundaries.
+Rigwright is authored by Rahul Krishna and distributed under the [MIT License](LICENSE).
