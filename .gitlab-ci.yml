@@ -13,6 +13,8 @@ variables:
 offline-gates:
   stage: verify
   image: python:3.12
+  rules:
+    - when: on_success
   script:
     - python3 -B tools/validate_contract.py
     - python3 -B tools/build_adapters.py --mode normal --output-root artifacts/build-normal
