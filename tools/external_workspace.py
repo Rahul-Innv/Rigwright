@@ -45,6 +45,26 @@ def _is_indirect(path: Path) -> bool:
     return path.is_symlink() or path.is_junction()
 
 
+def _assert_direct_ancestors(path: Path) -> None:
+    """Reject any symlink or junction already present above *path*."""
+    for candidate in (path, *path.parents):
+        try:
+            indirect = _is_indirect(candidate)
+        except OSError as exc:
+            raise ValueError(f"cannot safely inspect workspace ancestor {candidate}: {exc}") from exc
+        if indirect:
+            raise ValueError(f"refusing indirect workspace ancestor: {candidate}")
+
+
+def _resolve_direct_workspace(path: Path) -> Path:
+    requested = _absolute_without_resolving(path)
+    _assert_direct_ancestors(requested)
+    try:
+        return requested.resolve(strict=False)
+    except OSError as exc:
+        raise ValueError(f"cannot safely resolve workspace root {requested}: {exc}") from exc
+
+
 def _assert_direct_path(path: Path, workspace: Path) -> None:
     """Reject links, junctions, and paths resolving outside the workspace."""
     try:
@@ -82,10 +102,7 @@ def scaffold(
     evidence_date: str,
 ) -> Path:
     """Create one valid candidate skill without overwriting existing work."""
-    requested_workspace = _absolute_without_resolving(workspace)
-    if _is_indirect(requested_workspace):
-        raise ValueError(f"refusing indirect workspace root: {requested_workspace}")
-    workspace = requested_workspace.resolve()
+    workspace = _resolve_direct_workspace(workspace)
     if workspace.exists() and not workspace.is_dir():
         raise ValueError(f"workspace is not a directory: {workspace}")
     if not ID_PATTERN.fullmatch(skill_id) or len(skill_id) > 64:
@@ -204,7 +221,19 @@ def scaffold(
 
 def validate(workspace: Path) -> dict[str, Any]:
     """Validate arbitrary external skills without applying vendor leaf policy."""
-    workspace = workspace.resolve()
+    requested_workspace = _absolute_without_resolving(workspace)
+    try:
+        workspace = _resolve_direct_workspace(requested_workspace)
+    except ValueError as exc:
+        return {
+            "schema_version": 1,
+            "status": "FAIL",
+            "workspace": str(requested_workspace),
+            "checks": 1,
+            "skill_count": 0,
+            "eval_case_count": 0,
+            "errors": [str(exc)],
+        }
     errors: list[str] = []
     checks = 0
     eval_case_count = 0

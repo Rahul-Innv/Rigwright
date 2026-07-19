@@ -17,6 +17,25 @@ EVIDENCE_DATE = "2026-07-19"
 
 
 class ExternalWorkspaceTests(unittest.TestCase):
+    def _make_directory_indirection(self, link: Path, target: Path) -> None:
+        if os.name == "nt":
+            completed = subprocess.run(
+                ["cmd.exe", "/d", "/c", "mklink", "/J", str(link), str(target)],
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+            if completed.returncode != 0:
+                self.skipTest(
+                    "host cannot create a Windows junction: "
+                    f"exit {completed.returncode}: {completed.stderr.strip()}"
+                )
+        else:
+            try:
+                link.symlink_to(target, target_is_directory=True)
+            except OSError as exc:
+                self.skipTest(f"host cannot create a directory symlink: {exc}")
+
     def test_marker_is_created_once_and_skill_overwrite_is_refused(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             workspace = Path(temporary) / "workspace"
@@ -39,27 +58,31 @@ class ExternalWorkspaceTests(unittest.TestCase):
             workspace.mkdir()
             outside.mkdir()
             indirect = workspace / "src"
-            if os.name == "nt":
-                completed = subprocess.run(
-                    ["cmd.exe", "/d", "/c", "mklink", "/J", str(indirect), str(outside)],
-                    capture_output=True,
-                    text=True,
-                    check=False,
-                )
-                if completed.returncode != 0:
-                    self.skipTest(
-                        "host cannot create a Windows junction: "
-                        f"exit {completed.returncode}: {completed.stderr.strip()}"
-                    )
-            else:
-                try:
-                    indirect.symlink_to(outside, target_is_directory=True)
-                except OSError as exc:
-                    self.skipTest(f"host cannot create a directory symlink: {exc}")
+            self._make_directory_indirection(indirect, outside)
 
             with self.assertRaisesRegex(ValueError, "indirect workspace path"):
                 external_workspace.scaffold(workspace, "escape-check", DESCRIPTION, OUTCOME, EVIDENCE_DATE)
             self.assertEqual(list(outside.iterdir()), [])
+
+    def test_nonexistent_workspace_below_indirect_ancestor_is_refused(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            safe = root / "safe"
+            outside = root / "outside"
+            safe.mkdir()
+            outside.mkdir()
+            indirect_parent = safe / "link-to-outside"
+            self._make_directory_indirection(indirect_parent, outside)
+            requested = indirect_parent / "new-workspace"
+
+            with self.assertRaisesRegex(ValueError, "indirect workspace ancestor"):
+                external_workspace.scaffold(requested, "escape-check", DESCRIPTION, OUTCOME, EVIDENCE_DATE)
+            self.assertFalse((outside / "new-workspace").exists())
+
+            result = external_workspace.validate(requested)
+            self.assertEqual(result["status"], "FAIL")
+            self.assertTrue(any("indirect workspace ancestor" in error for error in result["errors"]))
+            self.assertFalse((outside / "new-workspace").exists())
 
     def test_malformed_workspace_is_rejected_without_crashing(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
