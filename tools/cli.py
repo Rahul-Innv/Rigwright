@@ -17,6 +17,7 @@ try:
     from . import (
         archive_packet,
         build_adapters,
+        external_workspace,
         run_all,
         run_evals,
         source_fingerprint,
@@ -29,6 +30,7 @@ try:
 except ImportError:  # direct script execution
     import archive_packet
     import build_adapters
+    import external_workspace
     import run_all
     import run_evals
     import source_fingerprint
@@ -90,7 +92,11 @@ COMMANDS: dict[str, tuple[str, object]] = {
     "fingerprint": ("capture or verify configured source fingerprints", _fingerprint),
     "archive-packet": ("create a copy-only archive packet (pass --source)", archive_packet.main),
     "manifest": ("write the workspace file manifest", _manifest),
+    "init-skill": ("scaffold one skill in an external workspace", external_workspace.init_main),
+    "validate-workspace": ("validate arbitrary external skill sources", external_workspace.validate_main),
 }
+
+EXTERNAL_COMMANDS = {"init-skill", "validate-workspace"}
 
 
 def _usage() -> str:
@@ -108,11 +114,12 @@ def main(argv: list[str] | None = None) -> int:
     if command not in COMMANDS:
         print(f"unknown command: {command}\n\n{_usage()}", file=sys.stderr)
         return 2
-    try:
-        require_repository_root()
-    except ValueError as exc:
-        print(f"error: {exc}", file=sys.stderr)
-        return 2
+    if command not in EXTERNAL_COMMANDS:
+        try:
+            require_repository_root()
+        except ValueError as exc:
+            print(f"error: {exc}", file=sys.stderr)
+            return 2
     sys.argv = [f"rigwright {command}", *args[1:]]
     _, handler = COMMANDS[command]
     try:

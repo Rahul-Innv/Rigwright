@@ -16,6 +16,17 @@ Rigwright authors and evaluates small, single-purpose skills for AI coding agent
 - **Install:** `pip install rigwright`. The CLI is published on PyPI as [`rigwright`](https://pypi.org/project/rigwright/). See [Install](#install) for the run-from-clone alternative that needs no install at all.
 - **Check it works:** from a clone of this repository, run `rigwright gate`. It runs the full offline gate (contract, build, package, determinism, fixtures, and evals) and prints `offline gate PASS: 8/8 commands`.
 
+## Create your own skill
+
+The installed CLI can create and validate a neutral skill in a workspace outside the Rigwright repository. It refuses to overwrite an existing skill directory and does not install, activate, or promote the result:
+
+```sh
+rigwright init-skill --workspace ../my-rigwright-skills --id changelog-check --description "Check a changelog for one required release heading." --outcome "Report whether the required heading exists."
+rigwright validate-workspace --workspace ../my-rigwright-skills
+```
+
+The first command creates `rigwright-workspace.json`, `src/skills/changelog-check/skill.json`, and its four-case `evals/evals.json`. The second command applies the neutral skill, lifecycle, and eval contracts to every skill it discovers; it does not require or hardcode Rigwright's seven vendor leaves. Edit the scaffold's generated triggers, instructions, and cases to match the real workflow before treating it as a candidate. Adapter building remains a repository workflow.
+
 ## One skill, end to end
 
 Every skill is one neutral JSON record. Here is `rigwright-author-skill`, the skill that authors other skills (trimmed):
