@@ -9,6 +9,11 @@ from __future__ import annotations
 import sys
 
 try:
+    from .common import require_repository_root
+except ImportError:  # direct script execution
+    from common import require_repository_root
+
+try:
     from . import (
         archive_packet,
         build_adapters,
@@ -102,6 +107,11 @@ def main(argv: list[str] | None = None) -> int:
     command = args[0]
     if command not in COMMANDS:
         print(f"unknown command: {command}\n\n{_usage()}", file=sys.stderr)
+        return 2
+    try:
+        require_repository_root()
+    except ValueError as exc:
+        print(f"error: {exc}", file=sys.stderr)
         return 2
     sys.argv = [f"rigwright {command}", *args[1:]]
     _, handler = COMMANDS[command]

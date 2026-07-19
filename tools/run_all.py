@@ -61,7 +61,7 @@ def main() -> None:
     latest = ROOT / "artifacts" / "validation" / "run-all-latest.json"
     latest.parent.mkdir(parents=True, exist_ok=True)
     latest.write_text(json.dumps(summary, indent=2) + "\n", encoding="utf-8", newline="\n")
-    print(f"offline gate {status}: {len(results)}/{len(commands)} commands; evidence {attempt.relative_to(ROOT)}")
+    print(f"offline gate {status}: {len(results)}/{len(commands)} commands; evidence {attempt.resolve()}")
     if status != "PASS":
         raise SystemExit(1)
 
