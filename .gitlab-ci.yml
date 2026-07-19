@@ -21,6 +21,7 @@ offline-gates:
     - python3 -B tools/verify_determinism.py
     - python3 -B tools/validate_runtime_fixtures.py
     - python3 -B tools/run_evals.py
+    - python3 -B tools/test_external_workspace.py
     - python3 -B tools/cli.py init-skill --workspace "/tmp/rigwright-${CI_JOB_ID}" --id changelog-check --description "Check a changelog for one required release heading." --outcome "Report whether the required heading exists."
     - python3 -B tools/cli.py validate-workspace --workspace "/tmp/rigwright-${CI_JOB_ID}"
   timeout: 20m

@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import argparse
+import os
 import re
 from datetime import date
 from pathlib import Path
@@ -36,6 +37,26 @@ def _title(skill_id: str) -> str:
     return " ".join(part.capitalize() for part in skill_id.split("-"))
 
 
+def _absolute_without_resolving(path: Path) -> Path:
+    return Path(os.path.abspath(path))
+
+
+def _is_indirect(path: Path) -> bool:
+    return path.is_symlink() or path.is_junction()
+
+
+def _assert_direct_path(path: Path, workspace: Path) -> None:
+    """Reject links, junctions, and paths resolving outside the workspace."""
+    try:
+        if _is_indirect(path):
+            raise ValueError(f"refusing indirect workspace path: {path}")
+        resolved = path.resolve(strict=False)
+    except OSError as exc:
+        raise ValueError(f"cannot safely inspect workspace path {path}: {exc}") from exc
+    if not resolved.is_relative_to(workspace):
+        raise ValueError(f"refusing workspace path outside {workspace}: {resolved}")
+
+
 def _non_empty_strings(value: Any, *, minimum: int = 1) -> bool:
     return (
         isinstance(value, list)
@@ -61,7 +82,10 @@ def scaffold(
     evidence_date: str,
 ) -> Path:
     """Create one valid candidate skill without overwriting existing work."""
-    workspace = workspace.resolve()
+    requested_workspace = _absolute_without_resolving(workspace)
+    if _is_indirect(requested_workspace):
+        raise ValueError(f"refusing indirect workspace root: {requested_workspace}")
+    workspace = requested_workspace.resolve()
     if workspace.exists() and not workspace.is_dir():
         raise ValueError(f"workspace is not a directory: {workspace}")
     if not ID_PATTERN.fullmatch(skill_id) or len(skill_id) > 64:
@@ -76,7 +100,14 @@ def scaffold(
         raise ValueError("evidence date must use YYYY-MM-DD") from exc
 
     marker_path = workspace / MARKER_NAME
-    if marker_path.exists():
+    source_root = workspace / "src"
+    skill_root = source_root / "skills"
+    skill_dir = skill_root / skill_id
+    for path in (marker_path, source_root, skill_root, skill_dir):
+        _assert_direct_path(path, workspace)
+
+    marker_exists = marker_path.exists()
+    if marker_exists:
         try:
             existing_marker = load_json(marker_path)
         except Exception as exc:  # noqa: BLE001
@@ -84,7 +115,6 @@ def scaffold(
         if existing_marker != MARKER:
             raise ValueError(f"unsupported workspace marker at {marker_path}")
 
-    skill_dir = workspace / "src" / "skills" / skill_id
     if skill_dir.exists():
         raise ValueError(f"refusing to overwrite existing skill directory: {skill_dir}")
 
@@ -165,7 +195,8 @@ def scaffold(
         "cases": cases,
     }
 
-    write_json(marker_path, MARKER)
+    if not marker_exists:
+        write_json(marker_path, MARKER)
     write_json(skill_dir / "skill.json", record)
     write_json(skill_dir / "evals" / "evals.json", evals)
     return skill_dir / "skill.json"
