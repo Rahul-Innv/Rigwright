@@ -77,7 +77,7 @@ policy:
   allow_implicit_invocation: false
 ```
 
-Each skill ships its own eval set (prompts that must trigger it and realistic near misses that must not), and one command replays them all:
+Each skill ships its own eval set (prompts that must trigger it and realistic near misses that must not), and one command rebuilds both adapter modes and replays them all:
 
 ```console
 $ python -B tools/run_evals.py
