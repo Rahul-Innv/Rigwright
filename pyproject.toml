@@ -22,6 +22,11 @@ classifiers = [
     "Topic :: Software Development :: Quality Assurance",
 ]
 
+[project.urls]
+Repository = "https://gitlab.com/krahul02004/Rigwright"
+Issues = "https://gitlab.com/krahul02004/Rigwright/-/work_items"
+Changelog = "https://gitlab.com/krahul02004/Rigwright/-/blob/main/CHANGELOG.md"
+
 [project.scripts]
 rigwright = "rigwright.cli:main"
 
