@@ -42,7 +42,15 @@ def _absolute_without_resolving(path: Path) -> Path:
 
 
 def _is_indirect(path: Path) -> bool:
-    return path.is_symlink() or path.is_junction()
+    if path.is_symlink() or path.is_junction():
+        return True
+    try:
+        # Windows exposes other reparse-point types through st_file_attributes.
+        # Treat every reparse point as indirect rather than trying to maintain a
+        # tag allowlist for a workspace trust boundary.
+        return bool(getattr(path.lstat(), "st_file_attributes", 0) & 0x400)
+    except FileNotFoundError:
+        return False
 
 
 def _assert_direct_ancestors(path: Path) -> None:
@@ -240,6 +248,25 @@ def validate(workspace: Path) -> dict[str, Any]:
     intent_keys: list[str] = []
 
     marker_path = workspace / MARKER_NAME
+    source_root = workspace / "src"
+    skill_root = source_root / "skills"
+    for path in (marker_path, source_root, skill_root):
+        checks += 1
+        try:
+            _assert_direct_path(path, workspace)
+        except ValueError as exc:
+            errors.append(str(exc))
+    if errors:
+        return {
+            "schema_version": 1,
+            "status": "FAIL",
+            "workspace": str(workspace),
+            "checks": checks,
+            "skill_count": 0,
+            "eval_case_count": 0,
+            "errors": errors,
+        }
+
     checks += 1
     try:
         marker = load_json(marker_path)
@@ -248,8 +275,22 @@ def validate(workspace: Path) -> dict[str, Any]:
     except Exception as exc:  # noqa: BLE001
         errors.append(f"{MARKER_NAME}: invalid or missing: {exc}")
 
-    skill_root = workspace / "src" / "skills"
-    directories = sorted(path for path in skill_root.iterdir() if path.is_dir()) if skill_root.is_dir() else []
+    directories: list[Path] = []
+    if skill_root.is_dir():
+        try:
+            candidates = sorted(skill_root.iterdir())
+        except OSError as exc:
+            errors.append(f"src/skills: cannot list safely: {exc}")
+            candidates = []
+        for path in candidates:
+            checks += 1
+            try:
+                _assert_direct_path(path, workspace)
+            except ValueError as exc:
+                errors.append(str(exc))
+                continue
+            if path.is_dir():
+                directories.append(path)
     checks += 1
     if not directories:
         errors.append("src/skills: at least one skill directory is required")
@@ -257,6 +298,18 @@ def validate(workspace: Path) -> dict[str, Any]:
     for skill_dir in directories:
         leaf = skill_dir.name
         record_path = skill_dir / "skill.json"
+        eval_dir = skill_dir / "evals"
+        eval_path = eval_dir / "evals.json"
+        unsafe_path = False
+        for path in (record_path, eval_dir, eval_path):
+            checks += 1
+            try:
+                _assert_direct_path(path, workspace)
+            except ValueError as exc:
+                errors.append(str(exc))
+                unsafe_path = True
+        if unsafe_path:
+            continue
         try:
             record = load_json(record_path)
         except Exception as exc:  # noqa: BLE001
@@ -348,7 +401,6 @@ def validate(workspace: Path) -> dict[str, Any]:
         if record.get("eval_path") != "evals/evals.json":
             errors.append(f"{leaf}: eval_path must be evals/evals.json")
 
-        eval_path = skill_dir / "evals" / "evals.json"
         try:
             evals = load_json(eval_path)
         except Exception as exc:  # noqa: BLE001

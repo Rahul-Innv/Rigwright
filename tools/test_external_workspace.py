@@ -84,6 +84,51 @@ class ExternalWorkspaceTests(unittest.TestCase):
             self.assertTrue(any("indirect workspace ancestor" in error for error in result["errors"]))
             self.assertFalse((outside / "new-workspace").exists())
 
+    def test_validation_refuses_indirect_skills_root(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            outside = root / "outside"
+            workspace = root / "workspace"
+            external_workspace.scaffold(outside, "outside-check", DESCRIPTION, OUTCOME, EVIDENCE_DATE)
+            workspace.mkdir()
+            (workspace / "src").mkdir()
+            external_workspace.write_json(
+                workspace / external_workspace.MARKER_NAME,
+                external_workspace.MARKER,
+            )
+            self._make_directory_indirection(
+                workspace / "src" / "skills",
+                outside / "src" / "skills",
+            )
+
+            result = external_workspace.validate(workspace)
+
+            self.assertEqual(result["status"], "FAIL")
+            self.assertTrue(any("indirect workspace path" in error for error in result["errors"]))
+            self.assertEqual(result["skill_count"], 0)
+
+    def test_validation_refuses_indirect_skill_directory(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            outside = root / "outside"
+            workspace = root / "workspace"
+            external_workspace.scaffold(outside, "outside-check", DESCRIPTION, OUTCOME, EVIDENCE_DATE)
+            external_workspace.write_json(
+                workspace / external_workspace.MARKER_NAME,
+                external_workspace.MARKER,
+            )
+            (workspace / "src" / "skills").mkdir(parents=True)
+            self._make_directory_indirection(
+                workspace / "src" / "skills" / "outside-check",
+                outside / "src" / "skills" / "outside-check",
+            )
+
+            result = external_workspace.validate(workspace)
+
+            self.assertEqual(result["status"], "FAIL")
+            self.assertTrue(any("indirect workspace path" in error for error in result["errors"]))
+            self.assertEqual(result["skill_count"], 0)
+
     def test_malformed_workspace_is_rejected_without_crashing(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             workspace = Path(temporary) / "workspace"
