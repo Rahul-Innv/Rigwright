@@ -5,8 +5,10 @@ from typing import Any
 
 try:
     from .common import ROOT, load_json, write_json
+    from . import build_adapters
 except ImportError:  # direct script execution
     from common import ROOT, load_json, write_json
+    import build_adapters
 try:
     from .priority import select_owner
 except ImportError:  # direct script execution
@@ -33,6 +35,12 @@ def route_prompt(prompt: str) -> str | None:
 
 
 def run(output: Path | None = None) -> dict[str, Any]:
+    # Eval assertions consume both build modes. Rebuild them here so the
+    # documented replay command is complete on a pristine checkout and cannot
+    # accidentally validate stale reports from an earlier run.
+    build_adapters.build("normal", ROOT / "artifacts" / "build-normal")
+    build_adapters.build("candidate-sandbox", ROOT / "artifacts" / "build")
+
     failures: list[dict[str, Any]] = []
     assertions = 0
     near_misses = 0

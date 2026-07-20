@@ -26,10 +26,37 @@ def _resolve_root() -> Path:
     cwd = Path.cwd().resolve()
     if (cwd / "src" / "skills").is_dir():
         return cwd
-    return here
+    # An installed package does not contain the repository inputs. Point at
+    # the user's actual working directory so validation can fail before any
+    # artifact path is created inside site-packages.
+    return cwd
 
 
 ROOT = _resolve_root()
+
+
+def is_repository_root(path: Path = ROOT) -> bool:
+    """Return whether *path* contains the inputs required by repo commands."""
+    resolved = path.resolve()
+    return all(
+        (
+            (resolved / "src" / "skills").is_dir(),
+            (resolved / "contracts" / "authoring-contract.schema.json").is_file(),
+            (resolved / "config" / "release.json").is_file(),
+        )
+    )
+
+
+def require_repository_root(path: Path = ROOT) -> Path:
+    """Validate a full checkout without creating files or directories."""
+    resolved = path.resolve()
+    if not is_repository_root(resolved):
+        raise ValueError(
+            f"Rigwright repository not found at {resolved}. "
+            "Run this command from a full Rigwright checkout or set "
+            "RIGWRIGHT_ROOT to its absolute path."
+        )
+    return resolved
 
 
 def load_json(path: Path) -> Any:

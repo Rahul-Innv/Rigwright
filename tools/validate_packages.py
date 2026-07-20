@@ -43,7 +43,7 @@ def validate(build_root: Path | None = None, output: Path | None = None) -> dict
         "author": "Rahul Krishna",
         "copyright_holder": "Rahul Krishna",
         "license": "MIT",
-        "canonical_host_url": None,
+        "canonical_host_url": "https://gitlab.com/krahul02004/Rigwright",
         "public_security_reporting_channel": None,
         "outward_actions_authorized": False,
     }
