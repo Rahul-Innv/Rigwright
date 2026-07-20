@@ -1,6 +1,6 @@
 # Rigwright working agreements
 
-- This tree is a candidate-sandbox proposal. Nothing in it is installed, enabled, published, or authoritative over any live capability registry.
+- This tree's skill and plugin records are candidate-sandbox proposals. The offline Python CLI is public on PyPI, but no skill or plugin here is installed, enabled, published to a marketplace, or authoritative over any live capability registry.
 - Lifecycle state and routing priority belong to an external lifecycle authority; this repository proposes records but never promotes them.
 - Treat captured upstream skill sources as read-only. Never execute copied source scripts as part of provenance or archive inspection.
 - Build candidate adapters only with an explicit `--mode candidate-sandbox`. A normal build must exclude candidate, alias, archived, quarantined, and rejected records.

@@ -22,7 +22,7 @@ and skill lifecycle state are separate facts and are recorded separately.
 - Runtime (provider-backed) evidence is not included. An internal blinded evaluation was run; it does not authorize promotion, and both evaluated candidate conditions retained critical-failure instances.
 - Producing Codex plugin manifests that pass the native validator for a dual-surface plugin remains an open problem.
 - No approved public security-reporting contact exists yet.
-- No canonical host URL has been selected. PyPI `0.1.0` has no matching git tag or GitLab Release, so artifact-to-commit provenance has not been established.
+- The canonical source host is [`gitlab.com/krahul02004/Rigwright`](https://gitlab.com/krahul02004/Rigwright). PyPI `0.1.0` has no matching git tag or GitLab Release, so artifact-to-commit provenance has not been established.
 
 ## [0.1.0] - 2026-07-18
 
