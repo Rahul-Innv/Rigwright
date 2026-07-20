@@ -8,7 +8,7 @@
   "normal_eligible_state": "current-authorized",
   "skill_frontmatter": ["name", "description"],
   "candidate_implicit_invocation": false,
-  "plugin_version_policy": "fixed pre-release version 0.1.0; no cachebuster, reinstall, tag, release, or publication",
+  "plugin_version_policy": "derive the selected source version from config/release.json; no cachebuster, reinstall, tag, release, or publication",
   "marketplace": "not generated",
   "future_components": ["mcp", "agent", "hook", "command", "app"]
 }

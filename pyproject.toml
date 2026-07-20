@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "rigwright"
-version = "0.1.0"
+version = "0.2.0"
 description = "A proposal-only system for authoring and evaluating small atomic skills across Claude Code and Codex, with one neutral contract and thin surface adapters."
 readme = "README.md"
 requires-python = ">=3.12"

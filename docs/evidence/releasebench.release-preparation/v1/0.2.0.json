@@ -1,0 +1,125 @@
+{
+  "receipt_version": "releasebench.release-preparation/v1",
+  "repository": {
+    "name": "Rigwright",
+    "baseline_branch": "main",
+    "baseline_commit": "ed72a1dddf9d043aa66487f0d917fd084674225e",
+    "baseline_clean": true,
+    "observed_local_tags": []
+  },
+  "candidate": {
+    "branch": "release/v0.2.0-prep",
+    "selected_version": "0.2.0",
+    "bump": "MINOR",
+    "release_date": "2026-07-19",
+    "self_certification": false
+  },
+  "semver_evidence": [
+    "PyPI 0.1.0 is historical registry state without a matching source tag or GitLab Release.",
+    "The candidate adds supported external-workspace skill authoring and validation while retaining the proposal-only lifecycle and outward-action boundaries.",
+    "The remaining shipped work hardens invalid and indirect workspace paths, makes evaluation replay self-contained, improves CI coverage, and reconciles public source metadata."
+  ],
+  "shipped_change_audit": {
+    "unreleased_section_was_nonempty": true,
+    "audited_commits_through": "ed72a1dddf9d043aa66487f0d917fd084674225e",
+    "cut_heading": "0.2.0 - 2026-07-19",
+    "fresh_unreleased_is_empty": true,
+    "compare_link_to_missing_v0_1_0": false
+  },
+  "version_authority": {
+    "source": "config/release.json",
+    "declared_version": "0.2.0",
+    "aligned_surfaces": [
+      "VERSION",
+      "pyproject.toml",
+      "tools/__init__.py"
+    ],
+    "generated_manifest_policy": "Both Claude Code and Codex plugin manifests derive version from config/release.json; generated artifacts remain untracked."
+  },
+  "local_diff": {
+    "scope": "Prepared content before this receipt was added",
+    "sha256": "dbc8644badb7c716d6630434f947d7a430d59bcc79a973a243a74243b7fc1a76",
+    "changed_paths": [
+      "CHANGELOG.md",
+      "README.md",
+      "ROADMAP.md",
+      "SECURITY.md",
+      "STATUS.md",
+      "VERSION",
+      "adapters/claude-code/adapter.json",
+      "adapters/codex/adapter.json",
+      "config/release.json",
+      "docs/authority-provenance.md",
+      "docs/public/release-readiness.md",
+      "pyproject.toml",
+      "tools/__init__.py",
+      "tools/test_release_consistency.py",
+      "tools/validate_packages.py"
+    ]
+  },
+  "test_evidence": [
+    {
+      "command": "python tools/run_all.py",
+      "exit_code": 0,
+      "result": "offline gate PASS: 8/8 commands; attempt-001"
+    },
+    {
+      "command": "python -B tools/test_release_consistency.py",
+      "exit_code": 0,
+      "result": "1 test passed"
+    },
+    {
+      "command": "python -B tools/test_external_workspace.py",
+      "exit_code": 0,
+      "result": "6 tests passed"
+    },
+    {
+      "command": "git diff --check and git fsck --strict --no-reflogs",
+      "exit_code": 0,
+      "result": "passed"
+    }
+  ],
+  "generated_candidate_evidence": {
+    "release_version": "0.2.0",
+    "claude_code": {
+      "tree_sha256": "42fa2a4f6b5cf43a12c1e7b838cb467c7d80c8f0baa990fe56bdac046ff86ef7",
+      "zip_sha256": "2bd1dbead43aa87c9728c4e7512f1dfbba849fa5e1ad4e9ff7df206a3391e6d6"
+    },
+    "codex": {
+      "tree_sha256": "c9f04ba79ef48487f0b936836893bbe19203687d97d25f46e669dde4863b828d",
+      "zip_sha256": "89540d91666c5eb22bff3c90d323f809a2e442b6e579006cd9a18cd5a8fad392"
+    },
+    "package_validation": "224 checks passed",
+    "determinism": "2 surface packages passed"
+  },
+  "drafted_outward_steps": [
+    {
+      "action": "annotated-tag",
+      "instruction": "git tag -a v0.2.0 -m \"Rigwright 0.2.0: external workspace authoring and safety hardening\"",
+      "executed": false
+    },
+    {
+      "action": "tag-push",
+      "instruction": "git push origin v0.2.0",
+      "executed": false
+    },
+    {
+      "action": "host-release",
+      "instruction": "Create one GitLab Release named Rigwright 0.2.0 from v0.2.0 after exact-commit acceptance.",
+      "executed": false
+    }
+  ],
+  "closed_actions": [
+    "remote-project-creation-and-first-push",
+    "host-visibility-metadata-topics-avatar-writes",
+    "host-public-api-and-network-verification",
+    "local-tag-creation-and-outward-tag-push",
+    "host-release-creation-or-backfill",
+    "package-registry-name-availability-reads",
+    "package-publication",
+    "remote-image-reachability-checks"
+  ],
+  "outward_actions_authorized": false,
+  "outward_actions_executed": false,
+  "next_action": "Independent review of the exact local commit; merge, tag, GitLab Release, Python package publication, and any marketplace action remain separately gated."
+}

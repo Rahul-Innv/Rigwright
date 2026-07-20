@@ -1,6 +1,7 @@
 # Security policy
 
-Rigwright `0.1.0` is a pre-release candidate. No version is publicly supported and no generated package is approved for installation or distribution.
+Rigwright source version `0.2.0` is a pre-release candidate. No version is publicly supported and
+no generated package is approved for installation or distribution.
 
 ## Reporting
 

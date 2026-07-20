@@ -38,7 +38,7 @@ def validate(build_root: Path | None = None, output: Path | None = None) -> dict
     expected_release = {
         "schema_version": 1,
         "product": "Rigwright",
-        "version": "0.1.0",
+        "version": "0.2.0",
         "release_state": "pre-release",
         "author": "Rahul Krishna",
         "copyright_holder": "Rahul Krishna",
@@ -49,7 +49,7 @@ def validate(build_root: Path | None = None, output: Path | None = None) -> dict
     }
     checks += 1
     if release != expected_release:
-        errors.append("release metadata does not match the approved pre-release baseline")
+        errors.append("release metadata does not match the approved 0.2.0 source candidate")
     checks += 1
     if (ROOT / "VERSION").read_text(encoding="utf-8").strip() != release.get("version"):
         errors.append("VERSION does not match config/release.json")
@@ -77,7 +77,7 @@ def validate(build_root: Path | None = None, output: Path | None = None) -> dict
             errors.append(f"{surface}: manifest name mismatch")
         checks += 1
         if manifest.get("version") != version:
-            errors.append(f"{surface}: manifest version must match the pre-release version")
+            errors.append(f"{surface}: manifest version must match config/release.json")
         checks += 1
         if manifest.get("author") != {"name": author}:
             errors.append(f"{surface}: manifest author mismatch")
