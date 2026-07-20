@@ -1,6 +1,9 @@
 # Status
 
-**Current state:** version `0.1.0` is a pre-release candidate, published to PyPI as [`rigwright`](https://pypi.org/project/rigwright/) (the offline CLI only). No git tag or host Release exists yet. Nothing in this repository installs, enables, exposes, promotes, or publishes a skill or plugin.
+**Current state:** source version `0.2.0` is a pre-release candidate. PyPI still carries
+[`rigwright` 0.1.0](https://pypi.org/project/rigwright/) for the offline CLI only; no `v0.2.0` git
+tag, GitLab Release, or 0.2.0 publication exists. Nothing in this repository installs, enables,
+exposes, promotes, or publishes a skill or plugin.
 
 ## Proposal-only, in practice
 

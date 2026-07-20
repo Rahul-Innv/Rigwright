@@ -10,8 +10,8 @@ Rigwright currently implements seven proposal-only leaves for routing, atomic sk
 - Complete owner human review of the frozen runtime evaluation and resolve critical-failure instances.
 - Designate a public security-reporting channel.
 - Confirm the canonical public host project and URL.
-- Confirm the release policy for the owner-selected cross-surface `0.1.0` baseline.
-- Independently qualify the exact committed launch candidate.
+- Preserve PyPI `0.1.0` as historical registry state without inventing a matching source tag.
+- Independently qualify the exact committed cross-surface `0.2.0` source candidate.
 
 ## Later, separately gated
 

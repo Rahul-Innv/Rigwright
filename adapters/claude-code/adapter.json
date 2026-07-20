@@ -6,7 +6,7 @@
   "candidate_build_mode": "explicit candidate-sandbox only",
   "normal_eligible_state": "current-authorized",
   "skill_frontmatter": ["name", "description"],
-  "plugin_version_policy": "fixed pre-release version 0.1.0; no tag, release, publication, or installation",
+  "plugin_version_policy": "derive the selected source version from config/release.json; no tag, release, publication, or installation",
   "dynamic_context": "not emitted",
   "marketplace": "not generated",
   "future_components": ["mcp", "agent", "hook", "command", "app"]

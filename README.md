@@ -155,7 +155,9 @@ offline evals passed: 59 assertions, 7 near misses, 6 fixed tasks
 
 Evidence is written under `artifacts/` (untracked). See [Validation](docs/public/validation.md) for the cache-free assessment pattern.
 
-**Status:** `0.1.0` is a pre-release candidate on PyPI: the seven skills are proposals under review, and nothing in this repository installs or activates anything; full current state in [STATUS.md](STATUS.md).
+**Status:** source version `0.2.0` is prepared for review while PyPI still carries the historical
+`0.1.0` CLI package. The seven skills remain proposals, and nothing in this repository installs or
+activates them; full current state in [STATUS.md](STATUS.md).
 
 ## Safety and limitations
 
