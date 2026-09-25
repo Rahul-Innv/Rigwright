@@ -11,7 +11,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 class ReleaseConsistencyTests(unittest.TestCase):
-    def test_0_2_0_source_candidate_is_consistent_and_provenance_limited(self) -> None:
+    def test_0_2_0_release_and_candidate_skills_are_consistent(self) -> None:
         project = tomllib.loads((ROOT / "pyproject.toml").read_text(encoding="utf-8"))["project"]
         release = json.loads((ROOT / "config" / "release.json").read_text(encoding="utf-8"))
         version_file = (ROOT / "VERSION").read_text(encoding="utf-8").strip()
@@ -35,21 +35,15 @@ class ReleaseConsistencyTests(unittest.TestCase):
         )
         self.assertEqual(project["urls"]["Repository"], release["canonical_host_url"])
         self.assertIn(f"version `{project['version']}`", status)
-        self.assertIn("PyPI still carries", status)
+        self.assertIn(f"[`rigwright` {project['version']}]", status)
         self.assertIn("## [Unreleased]\n\n## [0.2.0] - 2026-07-19", changelog)
         self.assertIn("## [0.1.0] - 2026-07-18", changelog)
-        self.assertIn("No matching git tag or GitLab Release exists", changelog)
-        self.assertIn("artifact-to-commit provenance has not been established", changelog)
         self.assertNotIn("compare/v0.1.0", changelog)
         self.assertNotIn("no public semantic release yet", changelog.lower())
-        self.assertNotIn("`0.1.0` remains untagged and unreleased", changelog)
-        self.assertIn("`0.2.0` is a MINOR candidate", readiness)
-        self.assertIn("offline CLI `0.1.0` has been uploaded to PyPI", readiness)
+        self.assertIn("PyPI publishes the offline CLI at `0.2.0`", readiness)
+        self.assertIn("candidate-sandbox proposals", readiness)
         self.assertIn("Never create a retroactive `v0.1.0` tag or Release", readiness)
-        self.assertIn("no matching tag or GitLab Release exists", readiness)
-        self.assertNotIn("no registry upload has been performed", readiness.lower())
-        self.assertNotIn("no canonical host owner", readiness.lower())
-        self.assertNotIn("first push", readiness.lower())
+        self.assertNotIn("PyPI still carries", readiness)
         self.assertEqual(2, adapter_policies.count("derive the selected source version from config/release.json"))
         self.assertIn('version = release["version"]', builder)
 

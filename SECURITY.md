@@ -1,7 +1,8 @@
 # Security policy
 
-Rigwright source version `0.2.0` is a pre-release candidate. No version is publicly supported and
-no generated package is approved for installation or distribution.
+Rigwright's offline CLI version `0.2.0` is public on PyPI. This policy does not designate a
+publicly supported version. No generated skill or plugin package is approved for installation or
+marketplace distribution.
 
 ## Reporting
 
