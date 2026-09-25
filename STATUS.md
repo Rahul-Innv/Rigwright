@@ -1,8 +1,8 @@
 # Status
 
-**Current state:** source version `0.2.0` is a pre-release candidate. PyPI still carries
-[`rigwright` 0.1.0](https://pypi.org/project/rigwright/) for the offline CLI only; no `v0.2.0` git
-tag, GitLab Release, or 0.2.0 publication exists. Nothing in this repository installs, enables,
+**Current state:** source version `0.2.0` has a matching git tag and GitLab Release, and
+[`rigwright` 0.2.0](https://pypi.org/project/rigwright/) is published on PyPI for the offline CLI.
+The seven skills remain candidate-sandbox proposals. Nothing in this repository installs, enables,
 exposes, promotes, or publishes a skill or plugin.
 
 ## Proposal-only, in practice

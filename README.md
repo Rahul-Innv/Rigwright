@@ -155,9 +155,9 @@ offline evals passed: 59 assertions, 7 near misses, 6 fixed tasks
 
 Evidence is written under `artifacts/` (untracked). See [Validation](docs/public/validation.md) for the cache-free assessment pattern.
 
-**Status:** source version `0.2.0` is prepared for review while PyPI still carries the historical
-`0.1.0` CLI package. The seven skills remain proposals, and nothing in this repository installs or
-activates them; full current state in [STATUS.md](STATUS.md).
+**Status:** source version `0.2.0` is tagged and released on GitLab, and the offline CLI
+is published on PyPI as `0.2.0`. The seven skills remain proposals; nothing in this
+repository installs or activates them. Full current state is in [STATUS.md](STATUS.md).
 
 ## Safety and limitations
 
@@ -179,4 +179,10 @@ activates them; full current state in [STATUS.md](STATUS.md).
 - [Roadmap](ROADMAP.md)
 - [Changelog](CHANGELOG.md)
 
-Rigwright is authored by Rahul Krishna and distributed under the [MIT License](LICENSE).
+Rigwright is distributed under the [MIT License](LICENSE).
+
+## Contributors
+
+- [Rahul Krishna](https://github.com/Rahul-Innv) - creator and contributor.
+- Claude Code - AI development assistance.
+- Codex - AI development assistance.
